@@ -14,6 +14,14 @@ export default defineEventHandler(async (event) => {
     where: {
       id,
     },
+    include: {
+      images: {
+        select: {
+          id: true,
+          url: true,
+        },
+      },
+    },
   });
 
   if (!advertisement) {

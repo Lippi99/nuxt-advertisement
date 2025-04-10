@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 useHead({
-  title: "Estabelecimentos",
+  title: "Propagandas",
 });
 
 import { getPaginationRowModel } from "@tanstack/vue-table";
@@ -46,7 +46,7 @@ const columns: TableColumn<Monitor>[] = [
             class:
               "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
             color: "secondary",
-            to: `/monitores/${row.original.id}`,
+            to: `/propagandas/${row.original.id}`,
           },
           () => "Atualizar"
         ),
@@ -58,7 +58,7 @@ const columns: TableColumn<Monitor>[] = [
             color: "error",
             onClick: () => {
               console.log("smth happened");
-              selectedEstabelecimento.value = row.original;
+              selectedAdvertisement.value = row.original;
               isDeleteModalOpen.value = true;
             },
           },
@@ -70,7 +70,7 @@ const columns: TableColumn<Monitor>[] = [
 ];
 
 const isDeleteModalOpen = ref(false);
-const selectedEstabelecimento = ref<Estabelecimento | null>(null);
+const selectedAdvertisement = ref<Estabelecimento | null>(null);
 const pagination = ref({
   pageIndex: 0,
   pageSize: 10,
@@ -78,13 +78,13 @@ const pagination = ref({
 
 const deleteTitle = computed(
   () =>
-    `Tem certeza que deseja excluir a propaganda ${selectedEstabelecimento.value}?`
+    `Tem certeza que deseja excluir a propaganda ${selectedAdvertisement.value}?`
 );
 
-const handleDeleteEstablishment = async () => {
-  const id = selectedEstabelecimento.value?.id;
+const handleDeleteAdvertisement = async () => {
+  const id = selectedAdvertisement.value?.id;
   try {
-    await $fetch(`/api/monitores/${id}`, {
+    await $fetch(`/api/propagandas/${id}`, {
       method: "DELETE",
     });
 
@@ -98,7 +98,7 @@ const handleDeleteEstablishment = async () => {
   } catch {
     toast.add({
       title: "Erro",
-      description: "Houve um erro ao excluir o propaganda",
+      description: "Houve um erro ao excluir a propaganda",
       color: "error",
     });
   }
@@ -144,7 +144,7 @@ const handleDeleteEstablishment = async () => {
           <h2 class="text-lg font-semibold">Confirmar exclusão</h2>
           <p>
             Tem certeza que deseja excluir
-            <strong>{{ selectedEstabelecimento?.name }}</strong
+            <strong>{{ selectedAdvertisement?.name }}</strong
             >?
           </p>
 
@@ -158,7 +158,7 @@ const handleDeleteEstablishment = async () => {
               Cancelar
             </UButton>
             <UButton
-              @click="handleDeleteEstablishment"
+              @click="handleDeleteAdvertisement"
               class="cursor-pointer"
               size="lg"
               color="error"

@@ -49,5 +49,5 @@ model AdvertisementImage {
   id              Int           @id @default(autoincrement())
   advertisementId Int
   url             String
-  advertisement   Advertisement @relation(fields: [advertisementId], references: [id])
+  advertisement   Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
 }
