@@ -34,6 +34,7 @@ model Playlist {
   name            String
   advertisementId Int
   advertisement   Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+  monitors        Monitor[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @default(now())
 }
@@ -49,21 +50,20 @@ model Establishment {
 }
 
 model Monitor {
-  id              Int             @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   name            String
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @default(now())
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @default(now())
   establishmentId Int
-  establishment   Establishment   @relation(fields: [establishmentId], references: [id])
-  advertisements  Advertisement[]
+  establishment   Establishment @relation(fields: [establishmentId], references: [id])
+  playlistId      Int?
+  playlist        Playlist?     @relation(fields: [playlistId], references: [id])
 }
 
 model Advertisement {
   id        Int                  @id @default(autoincrement())
   name      String
   createdAt DateTime             @default(now())
-  monitorId Int
-  monitor   Monitor              @relation(fields: [monitorId], references: [id])
   images    AdvertisementImage[]
   updatedAt DateTime             @default(now())
   playlists Playlist[]

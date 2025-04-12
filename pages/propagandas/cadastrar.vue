@@ -15,26 +15,18 @@ const schema = z.object({
     .string({ message: "Campo obrigatório" })
     .min(4, "Must be at least 4 characters"),
 
-  monitorId: z
-    .number({ message: "Campo obrigatório" })
-    .int({ message: "Campo obrigatório" }),
-
   url: z
     .array(z.any({ message: "Arquivo inválido" }), {
       required_error: "Campo obrigatório",
     })
     .min(1, "Pelo menos um arquivo é necessário"),
-
-  type: z.string({ message: "Campo obrigatório" }),
 });
 
 type Schema = z.output<typeof schema>;
 
 const state = reactive<Partial<Schema>>({
   name: undefined,
-  monitorId: undefined,
   url: [],
-  type: undefined,
 });
 
 const isSubmitting = ref(false);
@@ -69,8 +61,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       body: {
         name: event.data.name,
         url: event.data.url,
-        type: event.data.type,
-        monitorId: event.data.monitorId,
       },
     });
     toast.add({
@@ -80,8 +70,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     });
 
     state.name = undefined;
-    state.monitorId = undefined;
-    state.type = undefined;
     state.url = undefined;
   } catch {
     toast.add({
@@ -109,45 +97,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             class="w-full mt-2"
             v-model="state.name"
             type="text"
-          />
-        </UFormField>
-
-        <UFormField
-          class="mt-8"
-          label="Nome do monitor"
-          name="monitorId"
-          required
-        >
-          <USelect
-            size="lg"
-            v-model="state.monitorId"
-            :items="data?.monitores"
-            label-key="name"
-            value-key="id"
-            :ui="{
-              trailingIcon:
-                'group-data-[state=open]:rotate-180 transition-transform duration-200',
-            }"
-            class="w-full mt-2"
-          />
-        </UFormField>
-
-        <UFormField
-          class="mt-8"
-          label="Tipo (vídeo ou imagem)"
-          name="monitorId"
-          required
-        >
-          <USelect
-            size="lg"
-            v-model="state.type"
-            :items="['imagem', 'video']"
-            value-key="id"
-            :ui="{
-              trailingIcon:
-                'group-data-[state=open]:rotate-180 transition-transform duration-200',
-            }"
-            class="w-full mt-2"
           />
         </UFormField>
 

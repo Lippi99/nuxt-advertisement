@@ -6,11 +6,10 @@ import { getAuthUser } from "~/server/services/auth-service";
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   const body = await readBody(event);
-  const monitorId = parseInt(body.monitorId);
 
   const key = generateKey({
     prefix: "uploads",
-    userId: `monitor-${monitorId.toString()}`,
+    userId: `advertisement-${body.name.toString()}-${new Date()}`,
     originalName: "propaganda",
     extension: "png",
   });
@@ -20,7 +19,6 @@ export default defineEventHandler(async (event) => {
   const advertisementCreated = await prisma.advertisement.create({
     data: {
       name: body.name,
-      monitorId,
     },
   });
 

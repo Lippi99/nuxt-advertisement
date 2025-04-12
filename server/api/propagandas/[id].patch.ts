@@ -8,12 +8,11 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event);
 
-  const monitorId = parseInt(body.monitorId);
   const id = parseInt(getRouterParam(event, "id") as string);
 
   const key = generateKey({
     prefix: "uploads",
-    userId: `monitor-${monitorId.toString()}`,
+    userId: `advertisement-${body.name.toString()}-${new Date()}`,
     originalName: "propaganda",
     extension: "png",
   });
@@ -33,7 +32,6 @@ export default defineEventHandler(async (event) => {
     },
     data: {
       name: body.name,
-      monitorId,
     },
   });
 

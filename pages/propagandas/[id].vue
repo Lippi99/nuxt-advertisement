@@ -18,10 +18,6 @@ const schema = z
       .string({ message: "Campo obrigatório" })
       .min(4, "Must be at least 4 characters"),
 
-    monitorId: z
-      .number({ message: "Campo obrigatório" })
-      .int({ message: "Campo obrigatório" }),
-
     url: z
       .array(z.any({ message: "Arquivo inválido" }), {
         required_error: "Campo obrigatório",
@@ -47,13 +43,12 @@ type Schema = z.output<typeof schema>;
 
 const id = route.params.id;
 
-const { data: advertisement, refresh } = await useAsyncData("propagandas", () =>
-  $fetch(`/api/propagandas/${id}`)
+const { data: advertisement, refresh } = await useFetch(
+  `/api/propagandas/${id}`
 );
 
 const state = reactive<Partial<Schema>>({
   name: advertisement.value?.advertisement.name || undefined,
-  monitorId: advertisement.value?.advertisement.monitorId || undefined,
   url: [],
 });
 
@@ -61,10 +56,6 @@ const isSubmitting = ref(false);
 const isDeletingImageVideo = ref(false);
 
 const toast = useToast();
-
-const { data } = await useFetch("/api/monitores", {
-  method: "GET",
-});
 
 async function handleFileUpload(event: Event) {
   const target = event.target as HTMLInputElement;
@@ -90,7 +81,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       body: {
         name: event.data.name,
         url: event.data.url,
-        monitorId: event.data.monitorId,
       },
     });
     toast.add({
@@ -153,26 +143,6 @@ const hasImages = computed(
             class="w-full mt-2"
             v-model="state.name"
             type="text"
-          />
-        </UFormField>
-
-        <UFormField
-          class="mt-8"
-          label="Nome do monitor"
-          name="monitorId"
-          required
-        >
-          <USelect
-            size="lg"
-            v-model="state.monitorId"
-            :items="data?.monitores"
-            label-key="name"
-            value-key="id"
-            :ui="{
-              trailingIcon:
-                'group-data-[state=open]:rotate-180 transition-transform duration-200',
-            }"
-            class="w-full mt-2"
           />
         </UFormField>
 
@@ -246,16 +216,6 @@ const hasImages = computed(
               </div>
             </template>
           </UModal>
-
-          <!-- <h4 class="mb-3">Imagens já adicionadas</h4>
-          <NuxtImg
-            class="w-44 h-44 object-cover object-center rounded-md"
-            format="webp"
-            v-for="image in advertisement?.advertisement.images"
-            :key="image.id"
-            :src="image.url"
-            :alt="`Propaganda - ${image.id}`"
-          /> -->
         </div>
 
         <div class="flex items-center justify-center">
