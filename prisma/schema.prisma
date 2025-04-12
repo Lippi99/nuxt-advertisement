@@ -30,13 +30,12 @@ model User {
 }
 
 model Playlist {
-  id              Int           @id @default(autoincrement())
-  name            String
-  advertisementId Int
-  advertisement   Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
-  monitors        Monitor[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @default(now())
+  id             Int             @id @default(autoincrement())
+  name           String
+  monitors       Monitor[]
+  advertisements Advertisement[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now())
 }
 
 model Establishment {
@@ -61,12 +60,13 @@ model Monitor {
 }
 
 model Advertisement {
-  id        Int                  @id @default(autoincrement())
-  name      String
-  createdAt DateTime             @default(now())
-  images    AdvertisementImage[]
-  updatedAt DateTime             @default(now())
-  playlists Playlist[]
+  id         Int                  @id @default(autoincrement())
+  name       String
+  createdAt  DateTime             @default(now())
+  images     AdvertisementImage[]
+  updatedAt  DateTime             @default(now())
+  playlistId Int?
+  playlist   Playlist?            @relation(fields: [playlistId], references: [id])
 }
 
 model AdvertisementImage {

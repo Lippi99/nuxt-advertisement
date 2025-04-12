@@ -3,7 +3,7 @@ import { getAuthUser } from "~/server/services/auth-service";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
-  const propagandas = await prisma.advertisement.findMany({
+  const advertisements = await prisma.advertisement.findMany({
     select: {
       id: true,
       name: true,
@@ -20,5 +20,5 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  return { propagandas };
+  return { advertisements };
 });

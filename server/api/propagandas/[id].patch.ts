@@ -8,6 +8,15 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event);
 
+  const playlistId = parseInt(body.playlistId);
+
+  if (!playlistId) {
+    throw createError({
+      statusCode: 404,
+      message: "Playlist not found",
+    });
+  }
+
   const id = parseInt(getRouterParam(event, "id") as string);
 
   const key = generateKey({
@@ -32,6 +41,7 @@ export default defineEventHandler(async (event) => {
     },
     data: {
       name: body.name,
+      playlistId,
     },
   });
 

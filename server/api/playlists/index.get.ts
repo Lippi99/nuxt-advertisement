@@ -2,20 +2,12 @@ import { prisma } from "@/server/services/prisma-service";
 import { getAuthUser } from "~/server/services/auth-service";
 
 export default defineEventHandler(async (event) => {
-  const user = await getAuthUser(event);
-  const usuarios = await prisma.user.findMany({
-    where: {
-      id: {
-        not: user.id,
-      },
-    },
+  await getAuthUser(event);
+  const playlists = await prisma.playlist.findMany({
     select: {
       id: true,
-      email: true,
       name: true,
-      lastName: true,
       createdAt: true,
-      updatedAt: true,
     },
 
     orderBy: {
@@ -23,5 +15,5 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  return { usuarios };
+  return { playlists };
 });

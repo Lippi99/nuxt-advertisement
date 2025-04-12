@@ -7,6 +7,15 @@ export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   const body = await readBody(event);
 
+  const playlistId = parseInt(body.playlistId);
+
+  if (!playlistId) {
+    throw createError({
+      statusCode: 404,
+      message: "Playlist not found",
+    });
+  }
+
   const key = generateKey({
     prefix: "uploads",
     userId: `advertisement-${body.name.toString()}-${new Date()}`,
@@ -19,6 +28,7 @@ export default defineEventHandler(async (event) => {
   const advertisementCreated = await prisma.advertisement.create({
     data: {
       name: body.name,
+      playlistId,
     },
   });
 

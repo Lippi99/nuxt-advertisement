@@ -12,6 +12,8 @@ const includesPrefix = (routeName: string) =>
 const handleLogout = async () => {
   await authStore.logout();
 };
+
+const welcomeUser = computed(() => `Bem vindo(a), ${authStore.user?.name}`);
 </script>
 
 <template>
@@ -36,7 +38,7 @@ const handleLogout = async () => {
 
     <!-- Sidebar content -->
     <div class="py-5 h-full mt-8 flex flex-col relative">
-      <h1 class="text-center mt-4 text-2xl">Bem vindo, Felipe</h1>
+      <h1 class="text-center mt-4 text-xl">{{ welcomeUser }}</h1>
       <ul class="mt-4 text-lg">
         <li>
           <NuxtLink
@@ -82,6 +84,19 @@ const handleLogout = async () => {
             to="/propagandas"
           >
             Propagandas
+          </NuxtLink>
+        </li>
+
+        <li>
+          <NuxtLink
+            :class="[
+              'w-full h-full inline-block pl-7 py-3.5 text-neutral-400',
+              { 'text-primary-400': includesPrefix('playlists') },
+            ]"
+            class="w-full h-full inline-block pl-7 py-3.5 text-neutral-400"
+            to="/playlists"
+          >
+            Playlists
           </NuxtLink>
         </li>
       </ul>

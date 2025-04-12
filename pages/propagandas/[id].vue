@@ -17,6 +17,9 @@ const schema = z
     name: z
       .string({ message: "Campo obrigatório" })
       .min(4, "Must be at least 4 characters"),
+    playlistId: z
+      .number({ message: "Campo obrigatório" })
+      .int({ message: "Campo obrigatório" }),
 
     url: z
       .array(z.any({ message: "Arquivo inválido" }), {
@@ -47,8 +50,11 @@ const { data: advertisement, refresh } = await useFetch(
   `/api/propagandas/${id}`
 );
 
+const { data } = await useFetch(`/api/playlists`);
+
 const state = reactive<Partial<Schema>>({
   name: advertisement.value?.advertisement.name || undefined,
+  playlistId: advertisement.value?.advertisement.playlistId || undefined,
   url: [],
 });
 
@@ -81,6 +87,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       body: {
         name: event.data.name,
         url: event.data.url,
+        playlistId: event.data.playlistId,
       },
     });
     toast.add({
@@ -143,6 +150,26 @@ const hasImages = computed(
             class="w-full mt-2"
             v-model="state.name"
             type="text"
+          />
+        </UFormField>
+
+        <UFormField
+          class="mt-8"
+          label="Nome da playlist"
+          name="playlistId"
+          required
+        >
+          <USelect
+            size="lg"
+            v-model="state.playlistId"
+            :items="data?.playlists"
+            label-key="name"
+            value-key="id"
+            :ui="{
+              trailingIcon:
+                'group-data-[state=open]:rotate-180 transition-transform duration-200',
+            }"
+            class="w-full mt-2"
           />
         </UFormField>
 

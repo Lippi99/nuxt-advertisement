@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 useHead({
-  title: "Propagandas",
+  title: "Playlists",
 });
 
 definePageMeta({
@@ -18,7 +18,7 @@ const table = useTemplateRef("table");
 
 const UButton = resolveComponent("UButton");
 
-const { data, status, refresh } = await useFetch("/api/propagandas", {
+const { data, status, refresh } = await useFetch("/api/playlists", {
   method: "GET",
 });
 
@@ -30,11 +30,6 @@ const columns: TableColumn<Monitor | any>[] = [
   {
     accessorKey: "name",
     header: "Nome",
-  },
-  {
-    accessorKey: "_count",
-    header: "Qtd.",
-    cell: (value) => `${value.row.original._count.images}`,
   },
 
   {
@@ -54,7 +49,7 @@ const columns: TableColumn<Monitor | any>[] = [
             class:
               "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
             color: "secondary",
-            to: `/propagandas/${row.original.id}`,
+            to: `/playlists/${row.original.id}`,
           },
           () => "Atualizar"
         ),
@@ -92,7 +87,7 @@ const deleteTitle = computed(
 const handleDeleteAdvertisement = async () => {
   const id = selectedAdvertisement.value?.id;
   try {
-    await $fetch(`/api/propagandas/${id}`, {
+    await $fetch(`/api/playlists/${id}`, {
       method: "DELETE",
     });
 
@@ -116,14 +111,14 @@ const handleDeleteAdvertisement = async () => {
 <template>
   <NuxtLayout name="admin-authenticated">
     <slot name="header">
-      <RegisterTitleAction to="/propagandas/cadastrar" title="Propagandas" />
+      <RegisterTitleAction to="/playlists/cadastrar" title="Playlists" />
     </slot>
     <div class="w-full space-y-4 pb-4 mt-12">
       <UTable
         ref="table"
         :loading="status === 'pending'"
         v-model:pagination="pagination"
-        :data="data?.advertisements"
+        :data="data?.playlists"
         :columns="columns"
         :pagination-options="{
           getPaginationRowModel: getPaginationRowModel(),
