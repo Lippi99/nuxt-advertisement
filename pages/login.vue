@@ -6,9 +6,16 @@ useHead({
   title: "Login screen",
 });
 
+definePageMeta({
+  middleware: ["guest"],
+});
+
+const router = useRouter();
+const authStore = useAuthStore();
+
 const schema = z.object({
   email: z.string().email("Invalid email"),
-  password: z.string().min(8, "Must be at least 8 characters"),
+  password: z.string().min(1, "Required"),
 });
 
 type Schema = z.output<typeof schema>;
@@ -24,17 +31,24 @@ const toast = useToast();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isSubmitting.value = true;
   try {
-    setTimeout(() => {
+    const result = await authStore.login(event.data.email, event.data.password);
+
+    if (result) {
+      router.push("/estabelecimentos");
       toast.add({
         title: "Success",
         description: "The form has been submitted.",
         color: "success",
       });
-      console.log(event.data);
-      isSubmitting.value = false;
-    }, 1000);
+    } else {
+      toast.add({
+        title: "Error",
+        description: "Senha ou usuário inválido",
+        color: "error",
+      });
+    }
 
-    await navigateTo("/estabelecimentos");
+    isSubmitting.value = false;
   } catch (error) {
     toast.add({
       title: "Error",

@@ -2,6 +2,10 @@
 import type { FormSubmitEvent } from "@nuxt/ui";
 import { z } from "zod";
 
+definePageMeta({
+  middleware: ["protected"],
+});
+
 const route = useRoute();
 
 const id = computed(() => route.params.id);

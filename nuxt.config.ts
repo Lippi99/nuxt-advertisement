@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     awsSecretKey: "",
     awsBucketName: "",
     awsRegion: "",
+    jwtSecret: "",
   },
   vite: {
     resolve: {

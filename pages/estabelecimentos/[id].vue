@@ -2,6 +2,10 @@
 import type { FormSubmitEvent } from "@nuxt/ui";
 import { z } from "zod";
 
+definePageMeta({
+  middleware: ["protected"],
+});
+
 const route = useRoute();
 
 const id = computed(() => route.params.id);
@@ -20,10 +24,8 @@ const { data } = await useFetch(`/api/estabelecimentos/${id.value}`, {
 
 const title = ref(data.value?.estabelecimento?.name || "");
 
-watchEffect(() => {
-  useHead({
-    title: `${title.value} | Nuxt advertisement`,
-  });
+useHead({
+  title: `${title.value} | Nuxt advertisement`,
 });
 
 const state = reactive<Partial<Schema>>({

@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 useHead({
-  title: "Monitores",
+  title: "Estabelecimentos",
+});
+
+definePageMeta({
+  middleware: ["protected"],
 });
 
 import { getPaginationRowModel } from "@tanstack/vue-table";
@@ -13,11 +17,9 @@ const table = useTemplateRef("table");
 
 const UButton = resolveComponent("UButton");
 
-const { data, status, refresh } = await useAsyncData("establishments", () =>
-  $fetch("/api/estabelecimentos", {
-    method: "GET",
-  })
-);
+const { data, status, refresh } = await useFetch("/api/estabelecimentos", {
+  method: "GET",
+});
 
 const columns: TableColumn<Estabelecimento>[] = [
   {

@@ -2,6 +2,16 @@
 import { useSidebarStore } from "~/stores/sidebar";
 
 const sidebarStore = useSidebarStore();
+const authStore = useAuthStore();
+
+const route = useRoute();
+
+const includesPrefix = (routeName: string) =>
+  route.name?.toString().startsWith(routeName);
+
+const handleLogout = async () => {
+  await authStore.logout();
+};
 </script>
 
 <template>
@@ -25,13 +35,26 @@ const sidebarStore = useSidebarStore();
     </button>
 
     <!-- Sidebar content -->
-    <div class="py-5 h-full mt-8 flex flex-col">
+    <div class="py-5 h-full mt-8 flex flex-col relative">
       <h1 class="text-center mt-4 text-2xl">Bem vindo, Felipe</h1>
-      <ul class="mt-4 text-lg flex-1">
+      <ul class="mt-4 text-lg">
         <li>
           <NuxtLink
-            exactActiveClass="text-primary-400"
-            class="w-full h-full inline-block pl-7 py-3.5 text-neutral-400"
+            :class="[
+              'w-full h-full inline-block pl-7 py-3.5 text-neutral-400',
+              { 'text-primary-400': includesPrefix('usuarios') },
+            ]"
+            to="/usuarios"
+          >
+            Usuários
+          </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink
+            :class="[
+              'w-full h-full inline-block pl-7 py-3.5 text-neutral-400',
+              { 'text-primary-400': includesPrefix('estabelecimentos') },
+            ]"
             to="/estabelecimentos"
           >
             Estabelecimentos
@@ -39,7 +62,10 @@ const sidebarStore = useSidebarStore();
         </li>
         <li>
           <NuxtLink
-            exactActiveClass="text-primary-400"
+            :class="[
+              'w-full h-full inline-block pl-7 py-3.5 text-neutral-400',
+              { 'text-primary-400': includesPrefix('monitores') },
+            ]"
             class="w-full h-full inline-block pl-7 py-3.5 text-neutral-400"
             to="/monitores"
           >
@@ -48,7 +74,10 @@ const sidebarStore = useSidebarStore();
         </li>
         <li>
           <NuxtLink
-            exactActiveClass="text-primary-400"
+            :class="[
+              'w-full h-full inline-block pl-7 py-3.5 text-neutral-400',
+              { 'text-primary-400': includesPrefix('propagandas') },
+            ]"
             class="w-full h-full inline-block pl-7 py-3.5 text-neutral-400"
             to="/propagandas"
           >
@@ -56,6 +85,16 @@ const sidebarStore = useSidebarStore();
           </NuxtLink>
         </li>
       </ul>
+      <div class="absolute left-18 right-0 bottom-20">
+        <button type="button" @click="handleLogout">
+          <UTooltip :delay-duration="0" text="Sair">
+            <UIcon
+              class="cursor-pointer size-6 text-red-500"
+              name="i-lucide-log-out"
+            />
+          </UTooltip>
+        </button>
+      </div>
     </div>
   </div>
 

@@ -1,8 +1,13 @@
 <script lang="ts" setup>
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
+
 useHead({
   title: "Cadastrar monitor",
+});
+
+definePageMeta({
+  middleware: ["protected"],
 });
 
 const schema = z.object({

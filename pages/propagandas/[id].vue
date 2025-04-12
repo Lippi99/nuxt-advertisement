@@ -1,8 +1,13 @@
 <script lang="ts" setup>
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
+
 useHead({
   title: "Editar monitor",
+});
+
+definePageMeta({
+  middleware: ["protected"],
 });
 
 const route = useRoute();

@@ -7,14 +7,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Role {
   id        Int      @id @default(autoincrement())
   name      String
-  lastName  String
-  password  String
-  birth     DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+  users     User[]
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  name           String
+  lastName       String
+  password       String
+  roleId         Int
+  birth          DateTime
+  role           Role            @relation(fields: [roleId], references: [id])
+  establishments Establishment[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now())
+}
+
+model Playlist {
+  id              Int           @id @default(autoincrement())
+  name            String
+  advertisementId Int
+  advertisement   Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @default(now())
 }
 
 model Establishment {
@@ -22,6 +43,8 @@ model Establishment {
   name      String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
   monitors  Monitor[]
 }
 
@@ -43,6 +66,7 @@ model Advertisement {
   monitor   Monitor              @relation(fields: [monitorId], references: [id])
   images    AdvertisementImage[]
   updatedAt DateTime             @default(now())
+  playlists Playlist[]
 }
 
 model AdvertisementImage {

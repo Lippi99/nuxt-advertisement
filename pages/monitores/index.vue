@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 useHead({
-  title: "Estabelecimentos",
+  title: "Monitores",
+});
+
+definePageMeta({
+  middleware: ["protected"],
 });
 
 import { getPaginationRowModel } from "@tanstack/vue-table";
@@ -14,13 +18,11 @@ const table = useTemplateRef("table");
 
 const UButton = resolveComponent("UButton");
 
-const { data, status, refresh } = await useAsyncData("establishments", () =>
-  $fetch("/api/monitores", {
-    method: "GET",
-  })
-);
+const { data, status, refresh } = await useFetch("/api/monitores", {
+  method: "GET",
+});
 
-const columns: TableColumn<Monitor>[] = [
+const columns: TableColumn<Monitor | any>[] = [
   {
     accessorKey: "id",
     header: "Id",
@@ -28,6 +30,11 @@ const columns: TableColumn<Monitor>[] = [
   {
     accessorKey: "name",
     header: "Nome",
+  },
+  {
+    accessorFn: (row) => row.establishment?.name ?? "Sem nome",
+    id: "establishment",
+    header: "Estabelecimento",
   },
   {
     accessorKey: "createdAt",
@@ -57,8 +64,7 @@ const columns: TableColumn<Monitor>[] = [
               "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
             color: "error",
             onClick: () => {
-              console.log("smth happened");
-              selectedEstabelecimento.value = row.original;
+              selectedEstabelecimento.value = row.original.establishment;
               isDeleteModalOpen.value = true;
             },
           },

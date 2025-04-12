@@ -3,6 +3,10 @@ useHead({
   title: "Propagandas",
 });
 
+definePageMeta({
+  middleware: ["protected"],
+});
+
 import { getPaginationRowModel } from "@tanstack/vue-table";
 import type { TableColumn } from "@nuxt/ui";
 import dayjs from "dayjs";
@@ -14,13 +18,11 @@ const table = useTemplateRef("table");
 
 const UButton = resolveComponent("UButton");
 
-const { data, status, refresh } = await useAsyncData("advertisements", () =>
-  $fetch("/api/propagandas", {
-    method: "GET",
-  })
-);
+const { data, status, refresh } = await useFetch("/api/propagandas", {
+  method: "GET",
+});
 
-const columns: TableColumn<Monitor>[] = [
+const columns: TableColumn<Monitor | any>[] = [
   {
     accessorKey: "id",
     header: "Id",
@@ -29,6 +31,12 @@ const columns: TableColumn<Monitor>[] = [
     accessorKey: "name",
     header: "Nome",
   },
+  {
+    accessorKey: "_count",
+    header: "Qtd.",
+    cell: (value) => `${value.row.original._count.images}`,
+  },
+
   {
     accessorKey: "createdAt",
     header: "Criado em",
