@@ -1,5 +1,6 @@
 import {
   CreateBucketCommand,
+  DeleteObjectCommand,
   HeadBucketCommand,
   PutObjectCommand,
   S3Client,
@@ -64,8 +65,9 @@ export async function uploadFiles(
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const { buffer, contentType } = base64ToBuffer(file);
+    const keyFolder = baseKey;
 
-    const key = `${baseKey}-${Date.now()}-${i}.png`;
+    const key = `${keyFolder}-propaganda-${i}.png`;
 
     const command = new PutObjectCommand({
       Bucket: runtimeConfig.awsBucketName,
@@ -85,6 +87,38 @@ export async function uploadFiles(
   }
 
   return urls;
+}
+
+export async function deleteFile(key: string): Promise<void> {
+  try {
+    const command = new DeleteObjectCommand({
+      Bucket: runtimeConfig.awsBucketName,
+      Key: key,
+    });
+
+    await client.send(command);
+    console.log(`🗑️ File deleted: ${key}`);
+  } catch (error) {
+    console.error(`❌ Failed to delete file "${key}":`, error);
+    throw error;
+  }
+}
+
+export function generateKey({
+  prefix,
+  userId,
+  originalName,
+  extension,
+}: {
+  prefix: string;
+  userId: string;
+  originalName: string;
+  extension: string;
+}) {
+  const safeDate = new Date().toISOString().replace(/[:.]/g, "-");
+  const sanitizedId = userId.replace(/\s+/g, "-");
+
+  return `${prefix}/${sanitizedId}-${safeDate}`;
 }
 
 function generateUrl(fileName: string) {

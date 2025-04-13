@@ -18,8 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const key = generateKey({
     prefix: "uploads",
-    userId: `advertisement-${body.name.toString()}-${new Date()}`,
-    originalName: "propaganda",
+    originalName: `${playlistId}-${body.name}`,
     extension: "png",
   });
 

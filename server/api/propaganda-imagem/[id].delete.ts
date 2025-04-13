@@ -1,5 +1,6 @@
 import { prisma } from "@/server/services/prisma-service";
 import { getAuthUser } from "~/server/services/auth-service";
+import { deleteFile } from "~/server/services/aws-s3-service";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
@@ -17,6 +18,10 @@ export default defineEventHandler(async (event) => {
       message: "Image or video not found",
     });
   }
+
+  const url = new URL(advertisementImage.url);
+  const key = decodeURIComponent(url.pathname.slice(1));
+  await deleteFile(key);
 
   return setResponseStatus(event, 200);
 });
