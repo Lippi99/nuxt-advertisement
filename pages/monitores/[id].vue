@@ -4,6 +4,7 @@ import { z } from "zod";
 
 definePageMeta({
   middleware: ["protected"],
+  roles: ["admin"],
 });
 
 const route = useRoute();

@@ -36,7 +36,7 @@ export const useAuthStore = defineStore("auth", {
         });
 
         if (response?.user) {
-          this.setUser(response.user);
+          this.setUser(response?.user);
         }
 
         return true;

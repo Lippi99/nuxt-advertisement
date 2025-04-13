@@ -9,6 +9,7 @@ useHead({
 
 definePageMeta({
   middleware: ["protected"],
+  roles: ["admin"],
 });
 
 const route = useRoute();

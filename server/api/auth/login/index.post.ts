@@ -40,6 +40,12 @@ export default defineEventHandler(async (event) => {
       maxAge: 60 * 60 * 24 * 7,
     });
 
+    const role = await prisma.role.findUnique({
+      where: {
+        id: user.roleId,
+      },
+    });
+
     return {
       token,
       user: {
@@ -47,6 +53,7 @@ export default defineEventHandler(async (event) => {
         email: user.email,
         name: user.name,
         lastName: user.lastName,
+        role: role?.name as string,
       },
     };
   } catch (error) {

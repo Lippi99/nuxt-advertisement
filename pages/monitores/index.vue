@@ -5,6 +5,7 @@ useHead({
 
 definePageMeta({
   middleware: ["protected"],
+  roles: ["admin", "employee"],
 });
 
 import { getPaginationRowModel } from "@tanstack/vue-table";
