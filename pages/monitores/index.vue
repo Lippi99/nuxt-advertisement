@@ -64,7 +64,7 @@ const columns: TableColumn<Monitor | any>[] = [
               "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
             color: "error",
             onClick: () => {
-              selectedEstabelecimento.value = row.original.establishment;
+              selectedEstabelecimento.value = row.original;
               isDeleteModalOpen.value = true;
             },
           },
@@ -76,7 +76,7 @@ const columns: TableColumn<Monitor | any>[] = [
 ];
 
 const isDeleteModalOpen = ref(false);
-const selectedEstabelecimento = ref<Estabelecimento | null>(null);
+const selectedEstabelecimento = ref<Monitor | null>(null);
 const pagination = ref({
   pageIndex: 0,
   pageSize: 10,
@@ -89,6 +89,7 @@ const deleteTitle = computed(
 
 const handleDeleteEstablishment = async () => {
   const id = selectedEstabelecimento.value?.id;
+  console.log(selectedEstabelecimento);
   try {
     await $fetch(`/api/monitores/${id}`, {
       method: "DELETE",

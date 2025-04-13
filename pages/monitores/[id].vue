@@ -18,6 +18,8 @@ const schema = z.object({
   establishmentId: z
     .number({ message: "Campo obrigatório" })
     .int({ message: "Campo obrigatório" }),
+
+  playlistId: z.number().int().optional(),
 });
 
 type Schema = z.output<typeof schema>;
@@ -27,6 +29,10 @@ const { data } = await useFetch(`/api/monitores/${id.value}`, {
 });
 
 const { data: estabelecimentos } = await useFetch("/api/estabelecimentos", {
+  method: "GET",
+});
+
+const { data: playlists } = await useFetch("/api/playlists", {
   method: "GET",
 });
 
@@ -41,6 +47,7 @@ watchEffect(() => {
 const state = reactive<Partial<Schema>>({
   name: data.value?.monitor?.name || undefined,
   establishmentId: data?.value?.monitor?.establishmentId || undefined,
+  playlistId: data?.value?.monitor.playlistId || undefined,
 });
 
 const isSubmitting = ref(false);
@@ -55,6 +62,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       body: {
         name: event.data.name,
         establishmentId: event.data.establishmentId,
+        playlistId: event.data.playlistId,
       },
     });
 
@@ -104,6 +112,21 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             size="lg"
             v-model="state.establishmentId"
             :items="estabelecimentos?.estabelecimentos"
+            label-key="name"
+            value-key="id"
+            :ui="{
+              trailingIcon:
+                'group-data-[state=open]:rotate-180 transition-transform duration-200',
+            }"
+            class="w-full mt-2"
+          />
+        </UFormField>
+
+        <UFormField class="mt-8" label="Nome da playlist" name="playlistId">
+          <USelect
+            size="lg"
+            v-model="state.playlistId"
+            :items="playlists?.playlists"
             label-key="name"
             value-key="id"
             :ui="{

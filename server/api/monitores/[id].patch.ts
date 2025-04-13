@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
   const id = parseInt(getRouterParam(event, "id") as string);
+  const playlistId = parseInt(body.playlistId);
 
   if (!Number.isInteger(id)) {
     throw createError({
@@ -21,6 +22,7 @@ export default defineEventHandler(async (event) => {
     data: {
       name: body.name,
       establishmentId: body.establishmentId,
+      playlistId: playlistId,
     },
   });
 

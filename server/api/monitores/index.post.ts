@@ -6,11 +6,13 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
   const establishmentId = parseInt(body.establishmentId);
+  const playlistId = parseInt(body.playlistId);
 
   await prisma.monitor.create({
     data: {
       name: body.name,
       establishmentId,
+      playlistId,
     },
   });
 

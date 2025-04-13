@@ -32,6 +32,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   isSubmitting.value = true;
   try {
     const result = await authStore.login(event.data.email, event.data.password);
+    console.log(result);
 
     if (result) {
       router.push("/estabelecimentos");
