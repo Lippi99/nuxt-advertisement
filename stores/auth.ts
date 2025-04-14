@@ -35,9 +35,7 @@ export const useAuthStore = defineStore("auth", {
           body: { email, password },
         });
 
-        if (response?.user) {
-          this.setUser(response?.user);
-        }
+        this.setUser(response?.user);
 
         return true;
       } catch (error) {

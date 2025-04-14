@@ -1,9 +1,11 @@
 import { prisma } from "@/server/services/prisma-service";
-import { getAuthUser } from "~/server/services/auth-service";
+import { getAuthUser, requireRole } from "~/server/services/auth-service";
 
 export default defineEventHandler(async (event) => {
   const user = await getAuthUser(event);
   const id = parseInt(getRouterParam(event, "id") as string);
+
+  await requireRole(event, ["admin", "employee"]);
 
   const establishment = await prisma.establishment.findUnique({
     where: { id },

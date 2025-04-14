@@ -1,7 +1,8 @@
 import { prisma } from "@/server/services/prisma-service";
-import { getAuthUser } from "~/server/services/auth-service";
+import { getAuthUser, requireRole } from "~/server/services/auth-service";
 
 export default defineEventHandler(async (event) => {
+  await requireRole(event, ["admin"]);
   await getAuthUser(event);
   const id = parseInt(getRouterParam(event, "id") as string);
 

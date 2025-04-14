@@ -1,5 +1,6 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { User } from "~/server/models/user";
+import { requireRole } from "~/server/services/auth-service";
 import { prisma } from "~/server/services/prisma-service";
 
 interface AuthTokenPayload extends JwtPayload {
@@ -13,6 +14,8 @@ export default defineEventHandler(async (event) => {
   if (!token) {
     throw createError({ statusCode: 401, message: "No token provided" });
   }
+
+  await requireRole(event, ["admin", "employee"]);
 
   try {
     const decoded = jwt.verify(
