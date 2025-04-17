@@ -11,7 +11,6 @@ definePageMeta({
 import { getPaginationRowModel } from "@tanstack/vue-table";
 import type { TableColumn } from "@nuxt/ui";
 import dayjs from "dayjs";
-import type { Estabelecimento } from "~/types/establishment";
 import type { Monitor } from "~/types/monitor";
 
 const toast = useToast();
@@ -71,10 +70,30 @@ const columns: TableColumn<Monitor | any>[] = [
           },
           () => "Excluir"
         ),
+
+        h(
+          UButton,
+          {
+            class:
+              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
+            color: "neutral",
+            onClick: () => {
+              selectedEstabelecimento.value = row.original;
+
+              isPairing.value = true;
+            },
+          },
+          () => "Parear"
+        ),
       ]);
     },
   },
 ];
+
+const result = ref(null);
+const isValid = ref(undefined);
+const isPairing = ref(false);
+const paused = ref(false);
 
 const isDeleteModalOpen = ref(false);
 const selectedEstabelecimento = ref<Monitor | null>(null);
@@ -111,6 +130,61 @@ const handleDeleteEstablishment = async () => {
     });
   }
 };
+
+const timeout = (ms: number) => {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+};
+
+const onDetect = async ([firstDetectedCode]) => {
+  try {
+    result.value = firstDetectedCode.rawValue;
+    paused.value = true;
+    await timeout(2000);
+    isValid.value = result.value?.startsWith("http");
+
+    if (result?.value) {
+      await useFetch(`/api/monitores/setup/${result.value as string}`, {
+        method: "PATCH",
+        body: {
+          monitorId: selectedEstabelecimento.value?.id,
+        },
+      });
+    }
+    toast.add({
+      title: "Sucesso",
+      description: "Monitor logado com sucesso",
+      color: "success",
+    });
+  } catch (error) {
+    console.log(error);
+    toast.add({
+      title: "Erro",
+      description: "Houve um erro ao logar o monitor",
+      color: "error",
+    });
+  } finally {
+    await timeout(2000);
+    paused.value = false;
+  }
+};
+
+const resetValidationState = computed(() => {
+  return (isValid.value = undefined);
+});
+
+const validationPending = computed(() => {
+  return isValid.value === undefined && paused.value;
+});
+
+const validationSuccess = computed(() => {
+  return isValid.value === true;
+});
+
+const validationFailure = computed(() => {
+  return isValid.value === false;
+});
 </script>
 
 <template>
@@ -175,6 +249,29 @@ const handleDeleteEstablishment = async () => {
             </UButton>
           </div>
         </div>
+      </template>
+    </UModal>
+
+    <UModal class="w-11/12" v-model:open="isPairing">
+      <template #content>
+        <qrcode-stream
+          :paused="paused"
+          @detect="onDetect"
+          @error="console.error"
+          @camera-on="resetValidationState"
+        >
+          <div v-if="validationSuccess" class="validation-success">
+            This is a URL
+          </div>
+
+          <div v-if="validationFailure" class="validation-failure">
+            This is NOT a URL!
+          </div>
+
+          <div v-if="validationPending" class="validation-pending">
+            Long validation in progress...
+          </div>
+        </qrcode-stream>
       </template>
     </UModal>
   </NuxtLayout>

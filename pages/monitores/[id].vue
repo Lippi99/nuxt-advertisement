@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { FormSubmitEvent } from "@nuxt/ui";
 import { z } from "zod";
+import type { Monitor } from "~/types/monitor";
 
 definePageMeta({
   middleware: ["protected"],
@@ -9,7 +10,7 @@ definePageMeta({
 
 const route = useRoute();
 
-const id = computed(() => route.params.id);
+const id = route.params.id;
 
 const schema = z.object({
   name: z
@@ -25,7 +26,7 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>;
 
-const { data } = await useFetch(`/api/monitores/${id.value}`, {
+const { data } = await useFetch<{ monitor: Monitor }>(`/api/monitores/${id}`, {
   method: "GET",
 });
 
@@ -58,7 +59,7 @@ const toast = useToast();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isSubmitting.value = true;
   try {
-    await $fetch(`/api/monitores/${id.value}`, {
+    await $fetch(`/api/monitores/${id}`, {
       method: "PATCH",
       body: {
         name: event.data.name,

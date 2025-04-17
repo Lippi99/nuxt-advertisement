@@ -40,7 +40,7 @@ const welcomeUser = computed(() => `Bem vindo(a), ${authStore.user?.name}`);
     <div class="py-5 h-full mt-8 flex flex-col relative">
       <h1 class="text-center mt-4 text-xl">{{ welcomeUser }}</h1>
       <ul class="mt-4 text-lg">
-        <li>
+        <li v-if="authStore.user?.role === 'admin'">
           <NuxtLink
             :class="[
               'w-full h-full inline-block pl-7 py-3.5 text-neutral-400',
