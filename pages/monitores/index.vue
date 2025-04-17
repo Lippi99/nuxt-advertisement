@@ -185,6 +185,8 @@ const validationSuccess = computed(() => {
 const validationFailure = computed(() => {
   return isValid.value === false;
 });
+
+const facingMode = ref("environment");
 </script>
 
 <template>
@@ -255,6 +257,9 @@ const validationFailure = computed(() => {
     <UModal class="w-11/12" v-model:open="isPairing">
       <template #content>
         <qrcode-stream
+          :constraints="{
+            facingMode,
+          }"
           :paused="paused"
           @detect="onDetect"
           @error="console.error"
