@@ -8,18 +8,31 @@ export default defineEventHandler(async (event) => {
     select: {
       id: true,
       name: true,
+      createdAt: true,
       establishment: {
         select: {
           name: true,
         },
       },
-      createdAt: true,
+      unpairedMonitors: {
+        take: 1,
+        orderBy: { id: "desc" },
+        select: {
+          code: true,
+          paired: true,
+        },
+      },
     },
-
     orderBy: {
       id: "asc",
     },
   });
 
-  return { monitores };
+  const monitoresComFlatPaired = monitores.map((monitor) => ({
+    ...monitor,
+    code: monitor.unpairedMonitors[0]?.code ?? "",
+    paired: monitor.unpairedMonitors[0]?.paired ?? false,
+  }));
+
+  return { monitores: monitoresComFlatPaired };
 });

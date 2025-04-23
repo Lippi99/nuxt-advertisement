@@ -26,6 +26,7 @@ function listenForPairing(code: string) {
   source.onmessage = (event) => {
     const data = JSON.parse(event.data);
     if (data.paired) {
+      localStorage.removeItem("monitor-code");
       source.close();
       router.push(`/monitores/assistir/${code}`);
     }

@@ -17,21 +17,20 @@ export default defineEventHandler(async (event) => {
   const interval = setInterval(async () => {
     try {
       const monitor = await prisma.unpairedMonitor.findFirst({
-        where: {
-          code: id,
-          paired: true,
-        },
+        where: { code: id },
       });
 
-      if (monitor?.paired) {
-        event.node.res.write(`data: ${JSON.stringify({ paired: true })}\n\n`);
-        clearInterval(interval);
-        event.node.res.end();
-      }
+      const paired = monitor?.paired ?? false;
+
+      event.node.res.write(`data: ${JSON.stringify({ paired })}\n\n`);
     } catch (err) {
       event.node.res.write(`event: error\ndata: ${JSON.stringify(err)}\n\n`);
     }
   }, 1000);
+
+  event.node.req.on("close", () => {
+    clearInterval(interval);
+  });
 
   event.node.req.on("close", () => {
     clearInterval(interval);

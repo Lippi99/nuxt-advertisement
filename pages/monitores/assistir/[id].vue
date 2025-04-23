@@ -1,13 +1,22 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 
+useHead({
+  title: "Propagandas",
+});
+
 definePageMeta({
   middleware: ["guest"],
 });
 
 // Fetch data
+
+const route = useRoute();
+const router = useRouter();
+const id = route.params.id;
+
 const { data: propagandas } = await useFetch(
-  `/api/propagandas/assistir/46eae1db-0058-49c7-86e2-7c3d1e5aead7`,
+  `/api/propagandas/assistir/${id}`,
   { method: "GET" }
 );
 
@@ -20,7 +29,25 @@ const allImages = computed(() => {
 const currentIndex = ref(0);
 let intervalId: ReturnType<typeof setInterval> | null = null;
 
+function listenForPairing() {
+  const source = new EventSource(`/api/propagandas/assistir/pareado/${id}`);
+
+  source.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (!data.paired) {
+      source.close();
+      router.push("/login");
+    }
+  };
+
+  source.onerror = (err) => {
+    console.error("SSE error:", err);
+    source.close();
+  };
+}
+
 onMounted(() => {
+  listenForPairing();
   intervalId = setInterval(() => {
     if (allImages.value.length > 0) {
       currentIndex.value = (currentIndex.value + 1) % allImages.value.length;

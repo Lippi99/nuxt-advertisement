@@ -76,14 +76,17 @@ const columns: TableColumn<Monitor | any>[] = [
           {
             class:
               "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: "neutral",
+            color: row.original.paired ? "warning" : "neutral",
             onClick: () => {
               selectedEstabelecimento.value = row.original;
-
-              isPairing.value = true;
+              if (row.original.paired) {
+                isUnpairing.value = true;
+              } else {
+                isPairing.value = true;
+              }
             },
           },
-          () => "Parear"
+          () => (row.original.paired ? "Pareado" : "Parear")
         ),
       ]);
     },
@@ -93,6 +96,8 @@ const columns: TableColumn<Monitor | any>[] = [
 const result = ref(null);
 const isValid = ref(undefined);
 const isPairing = ref(false);
+
+const isUnpairing = ref(false);
 const paused = ref(false);
 
 const isDeleteModalOpen = ref(false);
@@ -105,6 +110,11 @@ const pagination = ref({
 const deleteTitle = computed(
   () =>
     `Tem certeza que deseja excluir o monitor ${selectedEstabelecimento.value}?`
+);
+
+const unpairMonitorTitle = computed(
+  () =>
+    `Tem certeza que deseja desparear o monitor ${selectedEstabelecimento.value}?`
 );
 
 const handleDeleteEstablishment = async () => {
@@ -137,7 +147,7 @@ const timeout = (ms: number) => {
   });
 };
 
-const onDetect = async ([firstDetectedCode]) => {
+const onDetect = async ([firstDetectedCode]: any) => {
   try {
     result.value = firstDetectedCode.rawValue;
     paused.value = true;
@@ -149,8 +159,11 @@ const onDetect = async ([firstDetectedCode]) => {
         method: "PATCH",
         body: {
           monitorId: selectedEstabelecimento.value?.id,
+          paired: true,
         },
       });
+
+      await refresh();
     }
     toast.add({
       title: "Sucesso",
@@ -167,6 +180,47 @@ const onDetect = async ([firstDetectedCode]) => {
   } finally {
     await timeout(2000);
     paused.value = false;
+  }
+};
+
+const handleUnpairMonitor = async () => {
+  try {
+    const { error } = await useFetch(
+      `/api/monitores/setup/${selectedEstabelecimento.value?.code}`,
+      {
+        method: "PATCH",
+        body: {
+          monitorId: selectedEstabelecimento.value?.id,
+          paired: false,
+        },
+      }
+    );
+
+    if (error.value?.statusCode == 400) {
+      toast.add({
+        title: "Erro",
+        description: "Este monitor já foi pareado",
+        color: "error",
+      });
+
+      return;
+    }
+
+    isUnpairing.value = false;
+
+    await refresh();
+
+    toast.add({
+      title: "Sucesso",
+      description: "Monitor deslogado com sucesso",
+      color: "success",
+    });
+  } catch (error) {
+    toast.add({
+      title: "Erro",
+      description: "Houve um erro ao desparear o monitor",
+      color: "error",
+    });
   }
 };
 
@@ -221,6 +275,38 @@ const facingMode = ref("environment");
         />
       </div>
     </div>
+
+    <UModal :title="unpairMonitorTitle" v-model:open="isUnpairing">
+      <template #content>
+        <div class="p-4 space-y-4">
+          <h2 class="text-lg font-semibold">Confirmar despareamento</h2>
+          <p>
+            Tem certeza que deseja desparear o
+            <strong>{{ selectedEstabelecimento?.name }}</strong
+            >?
+          </p>
+
+          <div class="flex justify-between gap-2 mt-12">
+            <UButton
+              class="cursor-pointer"
+              size="lg"
+              color="neutral"
+              @click="isUnpairing = false"
+            >
+              Cancelar
+            </UButton>
+            <UButton
+              @click="handleUnpairMonitor"
+              class="cursor-pointer"
+              size="lg"
+              color="primary"
+            >
+              Confirmar
+            </UButton>
+          </div>
+        </div>
+      </template>
+    </UModal>
 
     <UModal :title="deleteTitle" v-model:open="isDeleteModalOpen">
       <template #content>

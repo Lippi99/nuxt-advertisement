@@ -5,6 +5,8 @@ export type Monitor = {
   name: string;
   establishment: Estabelecimento;
   establishmentId: number;
+  paired: boolean;
+  code: string;
   playlistId: number;
   _count: {
     images: number;
