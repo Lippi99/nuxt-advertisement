@@ -12,6 +12,10 @@ import { getPaginationRowModel } from "@tanstack/vue-table";
 import type { TableColumn } from "@nuxt/ui";
 import dayjs from "dayjs";
 import type { Monitor } from "~/types/monitor";
+import UpdateButton from "~/components/ui/UpdateButton.vue";
+import DeleteButton from "~/components/ui/DeleteButton.vue";
+
+const { user } = useAuthStore();
 
 const toast = useToast();
 const table = useTemplateRef("table");
@@ -47,47 +51,41 @@ const columns: TableColumn<Monitor | any>[] = [
     header: "Ações",
     cell: ({ row }) => {
       return h("div", { class: "flex gap-3.5" }, [
+        h(UpdateButton, {
+          to: `/monitores/${row.original.id}`,
+          role: ["admin", "employee"],
+        }),
         h(
-          UButton,
+          DeleteButton,
           {
-            class:
-              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: "secondary",
-            to: `/monitores/${row.original.id}`,
-          },
-          () => "Atualizar"
-        ),
-        h(
-          UButton,
-          {
-            class:
-              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: "error",
             onClick: () => {
               selectedEstabelecimento.value = row.original;
               isDeleteModalOpen.value = true;
             },
+            role: ["admin"],
           },
           () => "Excluir"
         ),
 
-        h(
-          UButton,
-          {
-            class:
-              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: row.original.paired ? "warning" : "neutral",
-            onClick: () => {
-              selectedEstabelecimento.value = row.original;
-              if (row.original.paired) {
-                isUnpairing.value = true;
-              } else {
-                isPairing.value = true;
-              }
-            },
-          },
-          () => (row.original.paired ? "Pareado" : "Parear")
-        ),
+        user?.role === "admin" ||
+          (user?.role === "employee" &&
+            h(
+              UButton,
+              {
+                class:
+                  "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
+                color: row.original.paired ? "warning" : "neutral",
+                onClick: () => {
+                  selectedEstabelecimento.value = row.original;
+                  if (row.original.paired) {
+                    isUnpairing.value = true;
+                  } else {
+                    isPairing.value = true;
+                  }
+                },
+              },
+              () => (row.original.paired ? "Pareado" : "Parear")
+            )),
       ]);
     },
   },
@@ -152,7 +150,7 @@ const onDetect = async ([firstDetectedCode]: any) => {
     result.value = firstDetectedCode.rawValue;
     paused.value = true;
     await timeout(2000);
-    isValid.value = result.value?.startsWith("http");
+    isValid.value = (result.value as any)?.startsWith("http");
 
     if (result?.value) {
       await useFetch(`/api/monitores/setup/${result.value as string}`, {
@@ -246,7 +244,11 @@ const facingMode = ref("environment");
 <template>
   <NuxtLayout name="admin-authenticated">
     <slot name="header">
-      <RegisterTitleAction to="/monitores/cadastrar" title="Monitores" />
+      <RegisterTitleAction
+        to="/monitores/cadastrar"
+        title="Monitores"
+        role="admin"
+      />
     </slot>
     <div class="w-full space-y-4 pb-4 mt-12">
       <UTable

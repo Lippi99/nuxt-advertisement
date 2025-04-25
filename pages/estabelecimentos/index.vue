@@ -12,6 +12,10 @@ import { getPaginationRowModel } from "@tanstack/vue-table";
 import type { TableColumn } from "@nuxt/ui";
 import dayjs from "dayjs";
 import type { Estabelecimento } from "~/types/establishment";
+import UpdateButton from "~/components/ui/UpdateButton.vue";
+import DeleteButton from "~/components/ui/DeleteButton.vue";
+
+const { user } = useAuthStore();
 
 const toast = useToast();
 const table = useTemplateRef("table");
@@ -41,32 +45,25 @@ const columns: TableColumn<Estabelecimento>[] = [
     accessorKey: "actions",
     header: "Ações",
     cell: ({ row }) => {
-      return h("div", { class: "flex gap-3.5" }, [
-        h(
-          UButton,
-          {
-            class:
-              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: "secondary",
+      if (user?.role === "admin")
+        return h("div", { class: "flex gap-3.5" }, [
+          h(UpdateButton, {
             to: `/estabelecimentos/${row.original.id}`,
-          },
-          () => "Atualizar"
-        ),
-        h(
-          UButton,
-          {
-            class:
-              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: "error",
-            onClick: () => {
-              console.log("smth happened");
-              selectedEstabelecimento.value = row.original;
-              isDeleteModalOpen.value = true;
+            role: ["admin"],
+          }),
+          h(
+            DeleteButton,
+            {
+              to: `/estabelecimentos/${row.original.id}`,
+              role: ["admin"],
+              onClick: () => {
+                selectedEstabelecimento.value = row.original;
+                isDeleteModalOpen.value = true;
+              },
             },
-          },
-          () => "Excluir"
-        ),
-      ]);
+            () => "Excluir"
+          ),
+        ]);
     },
   },
 ];
@@ -113,6 +110,7 @@ const handleDeleteEstablishment = async () => {
       <RegisterTitleAction
         to="/estabelecimentos/cadastrar"
         title="Estabelecimentos"
+        role="admin"
       />
     </slot>
     <div class="w-full space-y-4 pb-4 mt-12">

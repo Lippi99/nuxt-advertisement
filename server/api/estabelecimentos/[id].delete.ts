@@ -4,7 +4,7 @@ import { getAuthUser, requireRole } from "~/server/services/auth-service";
 export default defineEventHandler(async (event) => {
   const user = await getAuthUser(event);
 
-  await requireRole(event, ["admin", "employee"]);
+  await requireRole(event, ["admin"]);
 
   const id = parseInt(getRouterParam(event, "id") as string);
 

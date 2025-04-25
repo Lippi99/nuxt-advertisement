@@ -8,7 +8,7 @@ useHead({
 
 definePageMeta({
   middleware: ["protected"],
-  roles: ["admin", "employee"],
+  roles: ["admin"],
 });
 
 const schema = z.object({

@@ -4,7 +4,14 @@ const sw = process.env.SW === "true";
 
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
+
   devtools: { enabled: true },
+  ssr: true,
+  nitro: {
+    prerender: {
+      failOnError: false,
+    },
+  },
 
   modules: [
     "@nuxt/ui",
@@ -30,17 +37,16 @@ export default defineNuxtConfig({
       },
     },
   },
+
   pwa: {
+    strategies: sw ? "injectManifest" : "generateSW",
+    srcDir: sw ? "service-worker" : undefined,
+    filename: sw ? "sw.ts" : undefined,
     registerType: "autoUpdate",
-    includeAssets: ["favicon.ico", "apple-touch-icon.png", "icons/*"],
     manifest: {
-      name: "My Awesome App",
-      short_name: "AwesomeApp",
-      description: "My Nuxt 3 PWA!",
+      name: "Nuxt Advertisement PWA",
+      short_name: "NuxtAdPwa",
       theme_color: "#ffffff",
-      background_color: "#ffffff",
-      display: "standalone",
-      start_url: "/",
       icons: [
         {
           src: "/icons/pwa-192x192.png",
@@ -52,7 +58,27 @@ export default defineNuxtConfig({
           sizes: "512x512",
           type: "image/png",
         },
+        {
+          src: "/icons/pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any maskable",
+        },
       ],
+    },
+    workbox: {
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+    },
+    injectManifest: {
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+    },
+
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: "/",
+      navigateFallbackAllowlist: [/^\/$/],
+      type: "module",
     },
   },
 });

@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   const user = await getAuthUser(event);
 
-  await requireRole(event, ["admin", "employee"]);
+  await requireRole(event, ["admin"]);
 
   await prisma.establishment.create({
     data: {

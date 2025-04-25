@@ -13,6 +13,8 @@ import type { TableColumn } from "@nuxt/ui";
 import dayjs from "dayjs";
 
 import type { User } from "~/types/user";
+import UpdateButton from "~/components/ui/UpdateButton.vue";
+import DeleteButton from "~/components/ui/DeleteButton.vue";
 
 const toast = useToast();
 const table = useTemplateRef("table");
@@ -52,30 +54,17 @@ const columns: TableColumn<User>[] = [
     header: "Ações",
     cell: ({ row }) => {
       return h("div", { class: "flex gap-3.5" }, [
-        h(
-          UButton,
-          {
-            class:
-              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: "secondary",
-            to: `/usuarios/${row.original.id}`,
+        h(UpdateButton, {
+          role: ["admin"],
+          to: `/usuarios/${row.original.id}`,
+        }),
+        h(DeleteButton, {
+          role: ["admin"],
+          onClick: () => {
+            selectedUser.value = row.original;
+            isDeleteModalOpen.value = true;
           },
-          () => "Atualizar"
-        ),
-        h(
-          UButton,
-          {
-            class:
-              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: "error",
-            onClick: () => {
-              console.log("smth happened");
-              selectedUser.value = row.original;
-              isDeleteModalOpen.value = true;
-            },
-          },
-          () => "Excluir"
-        ),
+        }),
       ]);
     },
   },
@@ -119,7 +108,11 @@ const handleDeleteUser = async () => {
 <template>
   <NuxtLayout name="admin-authenticated">
     <slot name="header">
-      <RegisterTitleAction to="/usuarios/cadastrar" title="Usuários" />
+      <RegisterTitleAction
+        to="/usuarios/cadastrar"
+        title="Usuários"
+        role="admin"
+      />
     </slot>
     <div class="w-full space-y-4 pb-4 mt-12">
       <UTable

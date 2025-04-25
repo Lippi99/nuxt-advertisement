@@ -3,7 +3,7 @@ import { prisma } from "~/server/services/prisma-service";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
-  await requireRole(event, ["admin", "employee"]);
+  await requireRole(event, ["admin"]);
   const roles = await prisma.role.findMany();
 
   if (!roles) {

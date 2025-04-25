@@ -4,7 +4,7 @@ import { deleteFile } from "~/server/services/aws-s3-service";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
-  await requireRole(event, ["admin", "employee"]);
+  await requireRole(event, ["admin"]);
   const id = parseInt(getRouterParam(event, "id") as string);
 
   const advertisementImage = await prisma.advertisementImage.delete({

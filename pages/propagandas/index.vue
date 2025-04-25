@@ -117,7 +117,11 @@ const handleDeleteAdvertisement = async () => {
 <template>
   <NuxtLayout name="admin-authenticated">
     <slot name="header">
-      <RegisterTitleAction to="/propagandas/cadastrar" title="Propagandas" />
+      <RegisterTitleAction
+        to="/propagandas/cadastrar"
+        title="Propagandas"
+        role="admin"
+      />
     </slot>
     <div class="w-full space-y-4 pb-4 mt-12">
       <UTable

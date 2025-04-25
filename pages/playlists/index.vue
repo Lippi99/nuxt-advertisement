@@ -13,6 +13,8 @@ import type { TableColumn } from "@nuxt/ui";
 import dayjs from "dayjs";
 import type { Estabelecimento } from "~/types/establishment";
 import type { Monitor } from "~/types/monitor";
+import UpdateButton from "~/components/ui/UpdateButton.vue";
+import DeleteButton from "~/components/ui/DeleteButton.vue";
 
 const toast = useToast();
 const table = useTemplateRef("table");
@@ -44,30 +46,18 @@ const columns: TableColumn<Monitor | any>[] = [
     header: "Ações",
     cell: ({ row }) => {
       return h("div", { class: "flex gap-3.5" }, [
-        h(
-          UButton,
-          {
-            class:
-              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: "secondary",
-            to: `/playlists/${row.original.id}`,
+        h(UpdateButton, {
+          role: ["admin"],
+          to: `/playlists/${row.original.id}`,
+        }),
+        h(DeleteButton, {
+          role: ["admin"],
+          onClick: () => {
+            console.log("smth happened");
+            selectedAdvertisement.value = row.original;
+            isDeleteModalOpen.value = true;
           },
-          () => "Atualizar"
-        ),
-        h(
-          UButton,
-          {
-            class:
-              "max-w-[120px] w-full flex items-center justify-center cursor-pointer text-neutral-950",
-            color: "error",
-            onClick: () => {
-              console.log("smth happened");
-              selectedAdvertisement.value = row.original;
-              isDeleteModalOpen.value = true;
-            },
-          },
-          () => "Excluir"
-        ),
+        }),
       ]);
     },
   },
@@ -112,7 +102,11 @@ const handleDeleteAdvertisement = async () => {
 <template>
   <NuxtLayout name="admin-authenticated">
     <slot name="header">
-      <RegisterTitleAction to="/playlists/cadastrar" title="Playlists" />
+      <RegisterTitleAction
+        to="/playlists/cadastrar"
+        title="Playlists"
+        role="admin"
+      />
     </slot>
     <div class="w-full space-y-4 pb-4 mt-12">
       <UTable

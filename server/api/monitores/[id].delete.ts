@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   const id = parseInt(getRouterParam(event, "id") as string);
 
-  await requireRole(event, ["admin", "employee"]);
+  await requireRole(event, ["admin"]);
 
   const monitor = await prisma.monitor.delete({
     where: {

@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const user = await getAuthUser(event);
   const id = parseInt(getRouterParam(event, "id") as string);
 
-  await requireRole(event, ["admin", "employee"]);
+  await requireRole(event, ["admin"]);
 
   const establishment = await prisma.establishment.findUnique({
     where: { id },

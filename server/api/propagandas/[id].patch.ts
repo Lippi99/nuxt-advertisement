@@ -5,7 +5,7 @@ import { generateKey } from "~/utils/aws";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
-  await requireRole(event, ["admin", "employee"]);
+  await requireRole(event, ["admin"]);
   const body = await readBody(event);
 
   const playlistId = parseInt(body.playlistId);

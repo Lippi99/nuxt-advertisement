@@ -5,7 +5,7 @@ import type { Monitor } from "~/types/monitor";
 
 definePageMeta({
   middleware: ["protected"],
-  roles: ["admin"],
+  roles: ["admin", "employee"],
 });
 
 const route = useRoute();
