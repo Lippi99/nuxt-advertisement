@@ -14,7 +14,6 @@
     "@aws-sdk/client-s3": "^3.782.0",
     "@nuxt/image": "1.10.0",
     "@nuxt/ui": "^3.0.2",
-    "@nuxthub/core": "0.8.25",
     "@pinia/nuxt": "0.10.1",
     "@prisma/nuxt": "^0.3.0",
     "@vite-pwa/nuxt": "1.0.0",

@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     prerender: {
+      autoSubfolderIndex: false,
       failOnError: false,
     },
   },
@@ -20,7 +21,6 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "nuxt-qrcode",
     "@vite-pwa/nuxt",
-    "@nuxthub/core",
   ],
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
@@ -81,8 +81,5 @@ export default defineNuxtConfig({
       navigateFallbackAllowlist: [/^\/$/],
       type: "module",
     },
-  },
-  hub: {
-    database: true,
   },
 });
