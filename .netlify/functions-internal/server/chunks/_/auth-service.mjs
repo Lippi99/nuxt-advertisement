@@ -1,7 +1,8 @@
 import { c as createError, u as useRuntimeConfig, g as getCookie } from '../nitro/nitro.mjs';
 import jwt from 'jsonwebtoken';
-import { p as prisma } from './prisma-service.mjs';
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 async function getAuthUser(event) {
   const config = useRuntimeConfig();
   const token = getCookie(event, "ad-auth");

@@ -8,12 +8,6 @@ import 'node:path';
 import 'node:crypto';
 import '@iconify/utils';
 import 'consola';
-import 'unhead/server';
-import 'unhead/utils';
-import 'vue';
-import 'unhead/plugins';
-import 'vue-bundle-renderer/runtime';
-import 'vue/server-renderer';
 import 'node:url';
 import 'ipx';
 

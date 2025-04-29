@@ -1,6 +1,8 @@
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { getAuthUser } from "~/server/services/auth-service";
-import { prisma } from "~/server/services/prisma-service";
+
+const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);

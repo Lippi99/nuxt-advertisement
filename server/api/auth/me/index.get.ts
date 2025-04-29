@@ -1,11 +1,14 @@
+import { PrismaClient } from "@prisma/client";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { User } from "~/server/models/user";
 import { requireRole } from "~/server/services/auth-service";
-import { prisma } from "~/server/services/prisma-service";
 
 interface AuthTokenPayload extends JwtPayload {
   userId: number;
 }
+
+const prisma = new PrismaClient();
+
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
 

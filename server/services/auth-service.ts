@@ -1,7 +1,9 @@
 import { getCookie, createError, type H3Event } from "h3";
 import jwt from "jsonwebtoken";
-import { prisma } from "@/server/services/prisma-service";
+import { PrismaClient } from "@prisma/client";
 import { UserRole } from "~/types/role";
+
+const prisma = new PrismaClient();
 
 export async function getAuthUser(event: H3Event) {
   const config = useRuntimeConfig();

@@ -17,7 +17,6 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/ui",
     "@nuxt/image",
-    "@prisma/nuxt",
     "@pinia/nuxt",
     "nuxt-qrcode",
     "@vite-pwa/nuxt",
@@ -30,14 +29,14 @@ export default defineNuxtConfig({
     awsRegion: "",
     jwtSecret: "",
   },
-  vite: {
-    resolve: {
-      alias: {
-        ".prisma/client/index-browser":
-          "./node_modules/.prisma/client/index-browser.js",
-      },
-    },
-  },
+  // vite: {
+  //   resolve: {
+  //     alias: {
+  //       ".prisma/client/index-browser":
+  //         "./node_modules/.prisma/client/index-browser.js",
+  //     },
+  //   },
+  // },
 
   pwa: {
     strategies: sw ? "injectManifest" : "generateSW",

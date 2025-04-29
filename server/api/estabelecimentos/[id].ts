@@ -1,5 +1,7 @@
-import { prisma } from "@/server/services/prisma-service";
+import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
+
+const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   const user = await getAuthUser(event);

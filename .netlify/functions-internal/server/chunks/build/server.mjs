@@ -1,8 +1,7 @@
 import { defineComponent, ref, h, resolveComponent, mergeProps, unref, computed, watch, withCtx, createVNode, resolveDynamicComponent, renderSlot, createBlock, openBlock, toDisplayString, useSlots, inject, createCommentVNode, hasInjectionContext, useAttrs, provide, toValue, getCurrentInstance, onServerPrefetch, toRef, isRef, shallowRef, nextTick, defineAsyncComponent, useSSRContext, createElementBlock, Suspense, Fragment, createApp, renderList, useId, shallowReactive, onErrorCaptured, reactive, effectScope, isReadonly, isShallow, isReactive, toRaw, createTextVNode, withModifiers, getCurrentScope, markRaw } from 'vue';
-import { B as serialize, C as hasProtocol, D as isScriptProtocol, E as joinURL, F as parseQuery, G as klona, H as defuFn, c as createError$1, I as defu, J as headSymbol, K as isEqual, L as useHead$1, M as withQuery, N as sanitizeStatusCode, O as getContext, P as withTrailingSlash, Q as withoutTrailingSlash, R as withLeadingSlash, S as parseURL, $ as $fetch$1, T as baseURL, U as createHooks, V as executeAsync, W as toRouteMatcher, X as createRouter$1, Y as encodeParam, Z as encodePath } from '../nitro/nitro.mjs';
+import { n as serialize, o as hasProtocol, q as isScriptProtocol, t as joinURL, v as parseQuery, w as klona, x as defuFn, y as defu, z as isEqual, A as withQuery, B as sanitizeStatusCode, C as getContext, D as withTrailingSlash, E as withoutTrailingSlash, c as createError$1, F as withLeadingSlash, G as parseURL, $ as $fetch$1, H as baseURL, I as createHooks, J as executeAsync, K as toRouteMatcher, L as createRouter$1, M as encodeParam, N as encodePath } from '../nitro/nitro.mjs';
 import { createPinia, setActivePinia, shouldHydrate } from 'pinia';
 import { RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
-import { PrismaClient } from '@prisma/client';
 import colors from 'tailwindcss/colors';
 import { Icon, getIcon, loadIcon as loadIcon$1, _api, addAPIProvider, setCustomIconsLoader } from '@iconify/vue';
 import { ssrRenderComponent, ssrRenderVNode, ssrRenderSlot, ssrRenderClass, ssrInterpolate, ssrRenderAttrs, ssrRenderList, ssrRenderSuspense, ssrRenderStyle } from 'vue/server-renderer';
@@ -11,6 +10,7 @@ import { createSharedComposable, reactivePick, useDebounceFn, reactiveOmit } fro
 import { createTV } from 'tailwind-variants';
 import { getIconCSS } from '@iconify/utils/lib/css/icon';
 import { debounce } from 'perfect-debounce';
+import { u as useHead$1, h as headSymbol } from '../routes/renderer.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -20,12 +20,13 @@ import 'node:path';
 import 'node:crypto';
 import '@iconify/utils';
 import 'consola';
-import 'unhead/server';
-import 'unhead/utils';
-import 'unhead/plugins';
-import 'vue-bundle-renderer/runtime';
 import 'node:url';
 import 'ipx';
+import 'vue-bundle-renderer/runtime';
+import 'unhead/server';
+import 'devalue';
+import 'unhead/utils';
+import 'unhead/plugins';
 
 function diff(obj1, obj2) {
   const h1 = _toHashedObject(obj1);
@@ -507,7 +508,7 @@ const unhead_k2P3m_ZDyjlr2mMYnoDPwavjsDN8hBlk9cFai0bbopU = /* @__PURE__ */ defin
     nuxtApp.vueApp.use(head);
   }
 });
-function toArray$1(value) {
+function toArray(value) {
   return Array.isArray(value) ? value : [value];
 }
 const __nuxt_page_meta$e = {
@@ -567,103 +568,103 @@ const _routes = [
     name: "login",
     path: "/login",
     meta: { "middleware": ["guest"] },
-    component: () => import('./login-DhWoHSBK.mjs')
+    component: () => import('./login-BRWh_lyQ.mjs')
   },
   {
     name: "usuarios-id",
     path: "/usuarios/:id()",
     meta: { ...__nuxt_page_meta$e || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./_id_-CXmslU10.mjs')
+    component: () => import('./_id_-DFiv26bS.mjs')
   },
   {
     name: "monitores-id",
     path: "/monitores/:id()",
     meta: { ...__nuxt_page_meta$d || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./_id_-3W0gGtAg.mjs')
+    component: () => import('./_id_-DCAzI25m.mjs')
   },
   {
     name: "playlists-id",
     path: "/playlists/:id()",
     meta: { ...__nuxt_page_meta$c || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./_id_-DA-tMIj7.mjs')
+    component: () => import('./_id_-CKR0GWcC.mjs')
   },
   {
     name: "usuarios",
     path: "/usuarios",
     meta: { ...__nuxt_page_meta$b || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./index-CthDniUe.mjs')
+    component: () => import('./index-5uA0vnZ5.mjs')
   },
   {
     name: "monitores",
     path: "/monitores",
     meta: { ...__nuxt_page_meta$a || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./index-Cp2aGH4K.mjs')
+    component: () => import('./index-BLjnXZrK.mjs')
   },
   {
     name: "playlists",
     path: "/playlists",
     meta: { ...__nuxt_page_meta$9 || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./index-wduQTick.mjs')
+    component: () => import('./index-BWDP6yS6.mjs')
   },
   {
     name: "propagandas-id",
     path: "/propagandas/:id()",
     meta: { ...__nuxt_page_meta$8 || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./_id_-CXbfx6TJ.mjs')
+    component: () => import('./_id_-DwEgHhq0.mjs')
   },
   {
     name: "propagandas",
     path: "/propagandas",
     meta: { ...__nuxt_page_meta$7 || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./index-BnajS4_I.mjs')
+    component: () => import('./index-Dsr0nWny.mjs')
   },
   {
     name: "usuarios-cadastrar",
     path: "/usuarios/cadastrar",
     meta: { ...__nuxt_page_meta$6 || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./cadastrar-soH66cyz.mjs')
+    component: () => import('./cadastrar-BO9O52kh.mjs')
   },
   {
     name: "monitores-cadastrar",
     path: "/monitores/cadastrar",
     meta: { ...__nuxt_page_meta$5 || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./cadastrar-CJNPVJs-.mjs')
+    component: () => import('./cadastrar-h99BFoW8.mjs')
   },
   {
     name: "playlists-cadastrar",
     path: "/playlists/cadastrar",
     meta: { ...__nuxt_page_meta$4 || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./cadastrar-BEqDTTgh.mjs')
+    component: () => import('./cadastrar-DCc8WEXF.mjs')
   },
   {
     name: "estabelecimentos-id",
     path: "/estabelecimentos/:id()",
     meta: { ...__nuxt_page_meta$3 || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./_id_-D8v4UFma.mjs')
+    component: () => import('./_id_-DDxIAte2.mjs')
   },
   {
     name: "propagandas-cadastrar",
     path: "/propagandas/cadastrar",
     meta: { ...__nuxt_page_meta$2 || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./cadastrar-DVjPfCK8.mjs')
+    component: () => import('./cadastrar-7jNp9gQm.mjs')
   },
   {
     name: "estabelecimentos",
     path: "/estabelecimentos",
     meta: { ...__nuxt_page_meta$1 || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./index-CubnMnF4.mjs')
+    component: () => import('./index-NvaFLlX9.mjs')
   },
   {
     name: "monitores-assistir-id",
     path: "/monitores/assistir/:id()",
     meta: { "middleware": ["guest"] },
-    component: () => import('./_id_-CjqgYgB5.mjs')
+    component: () => import('./_id_-XZhF_r3H.mjs')
   },
   {
     name: "estabelecimentos-cadastrar",
     path: "/estabelecimentos/cadastrar",
     meta: { ...__nuxt_page_meta || {}, ...{ "middleware": ["protected"] } },
-    component: () => import('./cadastrar-BQW0RFiA.mjs')
+    component: () => import('./cadastrar-DwZm69LP.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -799,8 +800,8 @@ const globalMiddleware = [
   manifest_45route_45rule
 ];
 const namedMiddleware = {
-  guest: () => import('./guest-C4ThpN8U.mjs'),
-  protected: () => import('./protected-BSJLRY6o.mjs')
+  guest: () => import('./guest-BcgJDyGS.mjs'),
+  protected: () => import('./protected-B718Ikp9.mjs')
 };
 const plugin$1 = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:router",
@@ -810,7 +811,7 @@ const plugin$1 = /* @__PURE__ */ defineNuxtPlugin({
     let __temp, __restore;
     let routerBase = (/* @__PURE__ */ useRuntimeConfig()).app.baseURL;
     const history = ((_a2 = routerOptions.history) == null ? void 0 : _a2.call(routerOptions, routerBase)) ?? createMemoryHistory(routerBase);
-    const routes2 = routerOptions.routes ? ([__temp, __restore] = executeAsync(() => routerOptions.routes(_routes)), __temp = await __temp, __restore(), __temp) ?? _routes : _routes;
+    const routes = routerOptions.routes ? ([__temp, __restore] = executeAsync(() => routerOptions.routes(_routes)), __temp = await __temp, __restore(), __temp) ?? _routes : _routes;
     let startPosition;
     const router = createRouter({
       ...routerOptions,
@@ -831,9 +832,9 @@ const plugin$1 = /* @__PURE__ */ defineNuxtPlugin({
         }
       },
       history,
-      routes: routes2
+      routes
     });
-    handleHotUpdate(router, routerOptions.routes ? routerOptions.routes : (routes22) => routes22);
+    handleHotUpdate(router, routerOptions.routes ? routerOptions.routes : (routes2) => routes2);
     nuxtApp.vueApp.use(router);
     const previousRoute = shallowRef(router.currentRoute.value);
     router.afterEach((_to, from) => {
@@ -914,7 +915,7 @@ const plugin$1 = /* @__PURE__ */ defineNuxtPlugin({
           if (!componentMiddleware) {
             continue;
           }
-          for (const entry2 of toArray$1(componentMiddleware)) {
+          for (const entry2 of toArray(componentMiddleware)) {
             middlewareEntries.add(entry2);
           }
         }
@@ -1002,24 +1003,6 @@ const plugin$1 = /* @__PURE__ */ defineNuxtPlugin({
     return { provide: { router } };
   }
 });
-const prismaClientSingleton = () => {
-  return new PrismaClient();
-};
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
-const plugin_9RP0IG4IZsdQGtc6t7gn_tuFRgHqjDGAVBd8w_WCy6s = /* @__PURE__ */ defineNuxtPlugin({
-  name: "prisma-client",
-  enforce: "pre",
-  async setup() {
-    return {
-      provide: {
-        prisma
-      }
-    };
-  },
-  env: {
-    islands: true
-  }
-});
 const reducers = [
   ["NuxtError", (data) => isNuxtError(data) && data.toJSON()],
   ["EmptyShallowRef", (data) => isRef(data) && isShallow(data) && !data.value && (typeof data.value === "bigint" ? "0n" : JSON.stringify(data.value) || "_")],
@@ -1029,9 +1012,6 @@ const reducers = [
   ["Ref", (data) => isRef(data) && data.value],
   ["Reactive", (data) => isReactive(data) && toRaw(data)]
 ];
-{
-  reducers.push(["Island", (data) => data && (data == null ? void 0 : data.__nuxt_island)]);
-}
 const revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:revive-payload:server",
   setup() {
@@ -1913,24 +1893,17 @@ const plugin_MeUvTuoKUi51yb_kBguab6hdcExVXeTtZtTg9TZZBB8 = /* @__PURE__ */ defin
   // For type portability
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 });
-const prerender_server_sqIxOBipVr4FbVMA9kqWL0wT8FPop6sKAXLVfifsJzk = /* @__PURE__ */ defineNuxtPlugin(async () => {
-  {
-    return;
-  }
-});
 const plugins = [
   payloadPlugin,
   unhead_k2P3m_ZDyjlr2mMYnoDPwavjsDN8hBlk9cFai0bbopU,
   plugin$1,
-  plugin_9RP0IG4IZsdQGtc6t7gn_tuFRgHqjDGAVBd8w_WCy6s,
   revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms,
   plugin,
   components_plugin_z4hgvsiddfKkfXTP6M8M4zG5Cb7sGnDhcryKVM45Di4,
   pwa_icons_plugin_C24GcIKjcI2zsa8A86om0L2LZjx1chWtzYxD11T7Txg,
   colors_E7kSti5pGZ28QhUUurq6gGRU3l65WuXO_KJC3GQgzFo,
   plugin_server_9Ca9_HhnjAGwBWpwAydRauMHxWoxTDY60BrArRnXN_A,
-  plugin_MeUvTuoKUi51yb_kBguab6hdcExVXeTtZtTg9TZZBB8,
-  prerender_server_sqIxOBipVr4FbVMA9kqWL0wT8FPop6sKAXLVfifsJzk
+  plugin_MeUvTuoKUi51yb_kBguab6hdcExVXeTtZtTg9TZZBB8
 ];
 const pwaInfo = { "webManifest": { "href": "/manifest.webmanifest" } };
 const __nuxt_component_0$1 = defineComponent({
@@ -5281,8 +5254,8 @@ const _sfc_main$1 = {
     const statusMessage = _error.statusMessage ?? (is404 ? "Page Not Found" : "Internal Server Error");
     const description = _error.message || _error.toString();
     const stack = void 0;
-    const _Error404 = defineAsyncComponent(() => import('./error-404-tUWMPYEX.mjs'));
-    const _Error = defineAsyncComponent(() => import('./error-500-sZiFn2jg.mjs'));
+    const _Error404 = defineAsyncComponent(() => import('./error-404-CMwi-npx.mjs'));
+    const _Error = defineAsyncComponent(() => import('./error-500-BY90K6Y3.mjs'));
     const ErrorTemplate = is404 ? _Error404 : _Error;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(ErrorTemplate), mergeProps({ statusCode: unref(statusCode), statusMessage: unref(statusMessage), description: unref(description), stack: unref(stack) }, _attrs), null, _parent));
@@ -5299,7 +5272,7 @@ const _sfc_main = {
   __name: "nuxt-root",
   __ssrInlineRender: true,
   setup(__props) {
-    const IslandRenderer = defineAsyncComponent(() => import('./island-renderer-DZOvutHN.mjs').then((r) => r.default || r));
+    const IslandRenderer = () => null;
     const nuxtApp = useNuxtApp();
     nuxtApp.deferHydration();
     nuxtApp.ssrContext.url;
@@ -5364,5 +5337,5 @@ let entry;
 }
 const entry$1 = (ssrContext) => entry(ssrContext);
 
-export { formInputsInjectionKey as A, formLoadingInjectionKey as B, formOptionsInjectionKey as C, inputIdInjectionKey as D, formFieldInjectionKey as E, looseToNumber as F, useNuxtApp as G, appLayoutTransition as H, _wrapInTransition as I, defineNuxtRouteMiddleware as J, useRequestEvent as K, LayoutMetaSymbol as L, navigateTo as M, PageRouteSymbol as P, __nuxt_component_1 as _, useAppConfig as a, _sfc_main$c as b, createError as c, _sfc_main$a as d, entry$1 as default, useRouter as e, useToast as f, get as g, _sfc_main$7 as h, injectHead as i, useRuntimeConfig as j, useRoute as k, _sfc_main$b as l, useAvatarGroup as m, usePortal as n, useFormField as o, useButtonGroup as p, useComponentIcons as q, isArrayOfArray as r, compare as s, tv as t, useHead as u, useLocale as v, fetchDefaults as w, useAsyncData as x, useRequestFetch as y, formBusInjectionKey as z };
+export { formOptionsInjectionKey as A, inputIdInjectionKey as B, formFieldInjectionKey as C, looseToNumber as D, useNuxtApp as E, appLayoutTransition as F, _wrapInTransition as G, defineNuxtRouteMiddleware as H, useRequestEvent as I, navigateTo as J, LayoutMetaSymbol as L, PageRouteSymbol as P, __nuxt_component_1 as _, useAppConfig as a, _sfc_main$c as b, _sfc_main$a as c, useRouter as d, entry$1 as default, useToast as e, _sfc_main$7 as f, get as g, useRuntimeConfig as h, useRoute as i, _sfc_main$b as j, useAvatarGroup as k, usePortal as l, useFormField as m, useButtonGroup as n, useComponentIcons as o, isArrayOfArray as p, compare as q, useLocale as r, fetchDefaults as s, tv as t, useHead as u, useAsyncData as v, useRequestFetch as w, formBusInjectionKey as x, formInputsInjectionKey as y, formLoadingInjectionKey as z };
 //# sourceMappingURL=server.mjs.map

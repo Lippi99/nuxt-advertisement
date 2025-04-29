@@ -1,5 +1,5 @@
 import { d as defineEventHandler, r as readBody, b as setResponseStatus } from '../../nitro/nitro.mjs';
-import { p as prisma } from '../../_/prisma-service.mjs';
+import { PrismaClient } from '@prisma/client';
 import { g as getAuthUser, r as requireRole } from '../../_/auth-service.mjs';
 import 'node:http';
 import 'node:https';
@@ -10,17 +10,11 @@ import 'node:path';
 import 'node:crypto';
 import '@iconify/utils';
 import 'consola';
-import 'unhead/server';
-import 'unhead/utils';
-import 'vue';
-import 'unhead/plugins';
-import 'vue-bundle-renderer/runtime';
-import 'vue/server-renderer';
 import 'node:url';
 import 'ipx';
-import '@prisma/client';
 import 'jsonwebtoken';
 
+const prisma = new PrismaClient();
 const index_post = defineEventHandler(async (event) => {
   await getAuthUser(event);
   await requireRole(event, ["admin"]);

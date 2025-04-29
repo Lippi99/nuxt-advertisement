@@ -1,7 +1,7 @@
-import { d as defineEventHandler, r as readBody, u as useRuntimeConfig, c as createError, s as setCookie } from '../../../nitro/nitro.mjs';
+import { d as defineEventHandler, r as readBody, c as createError, u as useRuntimeConfig, s as setCookie } from '../../../nitro/nitro.mjs';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { p as prisma } from '../../../_/prisma-service.mjs';
+import { PrismaClient } from '@prisma/client';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -11,16 +11,10 @@ import 'node:path';
 import 'node:crypto';
 import '@iconify/utils';
 import 'consola';
-import 'unhead/server';
-import 'unhead/utils';
-import 'vue';
-import 'unhead/plugins';
-import 'vue-bundle-renderer/runtime';
-import 'vue/server-renderer';
 import 'node:url';
 import 'ipx';
-import '@prisma/client';
 
+const prisma = new PrismaClient();
 const index_post = defineEventHandler(async (event) => {
   const { email, password } = await readBody(event);
   const config = useRuntimeConfig();
