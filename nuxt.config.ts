@@ -73,7 +73,4 @@ export default defineNuxtConfig({
       type: "module",
     },
   },
-  hub: {
-    database: true,
-  },
 });
