@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "nuxt-qrcode",
     "@vite-pwa/nuxt",
-    "@nuxthub/core",
+    // "@nuxthub/core",
   ],
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
