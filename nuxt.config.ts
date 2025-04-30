@@ -5,7 +5,6 @@ const sw = process.env.SW === "true";
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   nitro: {
-    preset: "netlify",
     prerender: {
       crawlLinks: true,
       failOnError: false,
@@ -20,6 +19,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "nuxt-qrcode",
     "@vite-pwa/nuxt",
+    "@nuxthub/core",
   ],
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
@@ -29,14 +29,6 @@ export default defineNuxtConfig({
     awsRegion: "",
     jwtSecret: "",
   },
-  // vite: {
-  //   resolve: {
-  //     alias: {
-  //       ".prisma/client/index-browser":
-  //         "./node_modules/.prisma/client/index-browser.js",
-  //     },
-  //   },
-  // },
 
   pwa: {
     strategies: sw ? "injectManifest" : "generateSW",
@@ -80,5 +72,8 @@ export default defineNuxtConfig({
       navigateFallbackAllowlist: [/^\/$/],
       type: "module",
     },
+  },
+  hub: {
+    database: true,
   },
 });
