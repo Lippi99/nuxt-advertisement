@@ -26,3 +26,5 @@ logs
 .wrangler
 
 ./src/generated/prisma
+# Local Netlify folder
+.netlify
