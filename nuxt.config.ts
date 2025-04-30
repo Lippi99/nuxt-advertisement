@@ -5,6 +5,7 @@ const sw = process.env.SW === "true";
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   nitro: {
+    preset: "netlify_edge",
     prerender: {
       crawlLinks: true,
       failOnError: false,
@@ -19,7 +20,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "nuxt-qrcode",
     "@vite-pwa/nuxt",
-    "@nuxthub/core",
+    // "@nuxthub/core",
   ],
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
@@ -72,8 +73,5 @@ export default defineNuxtConfig({
       navigateFallbackAllowlist: [/^\/$/],
       type: "module",
     },
-  },
-  hub: {
-    database: false,
   },
 });
