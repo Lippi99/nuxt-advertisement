@@ -5,8 +5,6 @@ const sw = process.env.SW === "true";
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   nitro: {
-    preset: "netlify",
-
     prerender: {
       crawlLinks: true,
       failOnError: false,
