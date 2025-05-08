@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Role {
@@ -17,25 +18,25 @@ model Role {
 
 model User {
   id             Int             @id @default(autoincrement())
-  email          String          @unique
   name           String
   lastName       String
   password       String
-  roleId         Int
   birth          DateTime
-  role           Role            @relation(fields: [roleId], references: [id])
-  establishments Establishment[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @default(now())
+  roleId         Int
+  email          String          @unique
+  establishments Establishment[]
+  role           Role            @relation(fields: [roleId], references: [id])
 }
 
 model Playlist {
   id             Int             @id @default(autoincrement())
   name           String
-  monitors       Monitor[]
-  advertisements Advertisement[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @default(now())
+  advertisements Advertisement[]
+  monitors       Monitor[]
 }
 
 model Establishment {
@@ -54,8 +55,8 @@ model Monitor {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @default(now())
   establishmentId  Int
-  establishment    Establishment     @relation(fields: [establishmentId], references: [id])
   playlistId       Int?
+  establishment    Establishment     @relation(fields: [establishmentId], references: [id])
   playlist         Playlist?         @relation(fields: [playlistId], references: [id])
   unpairedMonitors UnpairedMonitor[]
 }
@@ -64,10 +65,10 @@ model Advertisement {
   id         Int                  @id @default(autoincrement())
   name       String
   createdAt  DateTime             @default(now())
-  images     AdvertisementImage[]
   updatedAt  DateTime             @default(now())
   playlistId Int?
   playlist   Playlist?            @relation(fields: [playlistId], references: [id])
+  images     AdvertisementImage[]
 }
 
 model AdvertisementImage {
@@ -80,7 +81,7 @@ model AdvertisementImage {
 model UnpairedMonitor {
   id        Int      @id @default(autoincrement())
   code      String   @unique @db.Uuid
-  monitorId Int?
   paired    Boolean
-  monitor   Monitor? @relation(fields: [monitorId], references: [id], onDelete: SetNull)
+  monitorId Int?
+  monitor   Monitor? @relation(fields: [monitorId], references: [id])
 }
