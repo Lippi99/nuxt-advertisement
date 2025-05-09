@@ -1,18 +1,21 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { UserRole } from "~/types/role";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event);
   const config = useRuntimeConfig();
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    const userResult = await pool.query(
+      `SELECT id, email, name, last_name, password, role_id
+       FROM "user"
+       WHERE email = $1`,
+      [email]
+    );
+
+    const user = userResult.rows[0];
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw createError({
@@ -31,9 +34,12 @@ export default defineEventHandler(async (event) => {
       path: "/",
     });
 
-    const role = await prisma.role.findUnique({
-      where: { id: user.roleId },
-    });
+    const roleResult = await pool.query(
+      `SELECT name FROM "role" WHERE id = $1`,
+      [user.role_id]
+    );
+
+    const role = roleResult.rows[0];
 
     if (!role) {
       throw createError({
@@ -47,15 +53,13 @@ export default defineEventHandler(async (event) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        lastName: user.lastName,
+        lastName: user.last_name,
         role: role.name as UserRole,
       },
     };
   } catch (error: any) {
     console.error("Login error:", error);
-    if (error.statusCode) {
-      throw error;
-    }
+    if (error.statusCode) throw error;
 
     throw createError({
       statusCode: 500,

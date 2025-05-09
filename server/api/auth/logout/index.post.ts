@@ -1,11 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+// server/api/auth/logout.post.ts
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { pool } from "~/server/services/db";
 
 interface AuthTokenPayload extends JwtPayload {
   userId: number;
 }
-
-const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
@@ -20,9 +19,17 @@ export default defineEventHandler(async (event) => {
     }
 
     const decoded = jwt.verify(token, config.jwtSecret) as AuthTokenPayload;
-    await prisma.user.findUnique({
-      where: { id: decoded.userId },
-    });
+
+    const userResult = await pool.query(`SELECT id FROM "user" WHERE id = $1`, [
+      decoded.userId,
+    ]);
+
+    if (userResult.rowCount === 0) {
+      throw createError({
+        statusCode: 404,
+        message: "User not found",
+      });
+    }
 
     setCookie(event, "ad-auth", "", {
       maxAge: -1,

@@ -1,30 +1,19 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   const user = await getAuthUser(event);
   await requireRole(event, ["admin"]);
-  const usuarios = await prisma.user.findMany({
-    where: {
-      id: {
-        not: user.id,
-      },
-    },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      lastName: true,
-      createdAt: true,
-      updatedAt: true,
-    },
 
-    orderBy: {
-      id: "asc",
-    },
-  });
+  const result = await pool.query(
+    `
+    SELECT id, email, name, last_name, created_at, updated_at
+    FROM "user"
+    WHERE id <> $1
+    ORDER BY id ASC
+    `,
+    [user.id]
+  );
 
-  return { usuarios };
+  return { usuarios: result.rows };
 });

@@ -1,19 +1,19 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
 import { deleteFile } from "~/server/services/aws-s3-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   await requireRole(event, ["admin"]);
+
   const id = parseInt(getRouterParam(event, "id") as string);
 
-  const advertisementImage = await prisma.advertisementImage.delete({
-    where: {
-      id,
-    },
-  });
+  const result = await pool.query(
+    `DELETE FROM "advertisement_image" WHERE id = $1 RETURNING url`,
+    [id]
+  );
+
+  const advertisementImage = result.rows[0];
 
   if (!advertisementImage) {
     throw createError({

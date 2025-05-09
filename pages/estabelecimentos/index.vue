@@ -136,7 +136,7 @@ const handleDeleteEstablishment = async () => {
           "
           :items-per-page="table?.tableApi?.getState().pagination.pageSize"
           :total="table?.tableApi?.getFilteredRowModel().rows.length"
-          @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+          @update:page="(p: any) => table?.tableApi?.setPageIndex(p - 1)"
         />
       </div>
     </div>

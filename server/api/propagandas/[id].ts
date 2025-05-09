@@ -1,11 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   await requireRole(event, ["admin"]);
+
   const id = parseInt(getRouterParam(event, "id") as string);
 
   if (!Number.isInteger(id)) {
@@ -15,19 +14,12 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const advertisement = await prisma.advertisement.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      images: {
-        select: {
-          id: true,
-          url: true,
-        },
-      },
-    },
-  });
+  // 1. Get the advertisement
+  const adResult = await pool.query(
+    `SELECT * FROM "advertisement" WHERE id = $1`,
+    [id]
+  );
+  const advertisement = adResult.rows[0];
 
   if (!advertisement) {
     throw createError({
@@ -35,5 +27,14 @@ export default defineEventHandler(async (event) => {
       statusMessage: "advertisement doesn't exist",
     });
   }
+
+  // 2. Get related images
+  const imagesResult = await pool.query(
+    `SELECT id, url FROM "advertisement_image" WHERE advertisement_id = $1`,
+    [id]
+  );
+
+  advertisement.images = imagesResult.rows;
+
   return { advertisement };
 });

@@ -1,30 +1,16 @@
-import { PrismaClient } from "@prisma/client";
+// server/api/users/create.post.ts
 import bcrypt from "bcryptjs";
 import { getAuthUser } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
-  await getAuthUser(event);
+  // await getAuthUser(event);
 
   const { name, lastName, email, roleId, birth, password } = await readBody(
     event
   );
 
-  const role = await prisma.role.findUnique({
-    where: {
-      id: parseInt(roleId),
-    },
-  });
-
-  if (!role) {
-    throw createError({
-      statusCode: 404,
-      message: "Role not found",
-    });
-  }
-
-  // Input validation
+  // Validate required fields
   if (!name || !email || !password || !lastName || !roleId || !birth) {
     throw createError({
       statusCode: 400,
@@ -39,45 +25,46 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  try {
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
+  const roleCheck = await pool.query(`SELECT id FROM "role" WHERE id = $1`, [
+    parseInt(roleId),
+  ]);
+  if (roleCheck.rowCount === 0) {
+    throw createError({
+      statusCode: 404,
+      message: "Role not found",
     });
-
-    if (existingUser) {
-      throw createError({
-        statusCode: 400,
-        message: "Email already registered",
-      });
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new user
-    const user = await prisma.user.create({
-      data: {
-        name,
-        lastName,
-        email,
-        password: hashedPassword,
-        roleId,
-        birth: new Date(birth),
-      },
-    });
-
-    return {
-      user,
-    };
-  } catch (error: any) {
-    // Handle database errors
-    if (error.code === "P2002") {
-      throw createError({
-        statusCode: 400,
-        message: "Email already registered",
-      });
-    }
-    throw error;
   }
+
+  // Check if email already exists
+  const userExists = await pool.query(
+    `SELECT id FROM "user" WHERE email = $1`,
+    [email]
+  );
+  if (userExists.rowCount && userExists.rowCount > 0) {
+    throw createError({
+      statusCode: 400,
+      message: "Email already registered",
+    });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const result = await pool.query(
+    `
+    INSERT INTO "user" (name, last_name, email, password, role_id, birth, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, now(), now())
+    RETURNING id, name, last_name, email, role_id, birth
+    `,
+    [name, lastName, email, hashedPassword, parseInt(roleId), new Date(birth)]
+  );
+
+  const user = result.rows[0];
+
+  return {
+    user: {
+      ...user,
+      lastName: user.last_name,
+      roleId: user.role_id,
+    },
+  };
 });

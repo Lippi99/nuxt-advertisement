@@ -1,21 +1,19 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-
   const user = await getAuthUser(event);
 
   await requireRole(event, ["admin"]);
 
-  await prisma.establishment.create({
-    data: {
-      name: body.name,
-      userId: user.id,
-    },
-  });
+  await pool.query(
+    `
+    INSERT INTO "establishment" (name, user_id, created_at, updated_at)
+    VALUES ($1, $2, now(), now())
+    `,
+    [body.name, user.id]
+  );
 
   return setResponseStatus(event, 201);
 });
