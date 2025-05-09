@@ -1,0 +1,27 @@
+name: Supabase DB Seeder
+
+on:
+  push:
+    branches:
+      - master # or change to your desired branch
+
+jobs:
+  seed-db:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Supabase CLI
+        run: |
+          npm install -g supabase
+
+      - name: Log in to Supabase
+        run: supabase login --token ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Link Supabase project
+        run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
+
+      - name: Seed database
+        run: supabase db execute --file scripts/seed.sql

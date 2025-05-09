@@ -1,31 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   const user = await getAuthUser(event);
-  const id = parseInt(getRouterParam(event, "id") as string);
-
   await requireRole(event, ["admin"]);
 
-  const establishment = await prisma.establishment.findUnique({
-    where: { id },
-  });
-
-  if (!establishment) {
-    throw createError({
-      statusCode: 404,
-      message: "Establishment not found",
-    });
-  }
-
-  if (establishment.userId !== user.id) {
-    throw createError({
-      statusCode: 403,
-      message: "You are not authorized to update this establishment",
-    });
-  }
+  const id = parseInt(getRouterParam(event, "id") as string);
 
   if (!Number.isInteger(id)) {
     throw createError({
@@ -34,17 +14,26 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const estabelecimento = await prisma.establishment.findUnique({
-    where: {
-      id,
-    },
-  });
+  const result = await pool.query(
+    `SELECT * FROM "establishment" WHERE id = $1`,
+    [id]
+  );
 
-  if (!estabelecimento) {
+  const establishment = result.rows[0];
+
+  if (!establishment) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Establishment doesn't exist",
+      message: "Establishment doesn't exist",
     });
   }
-  return { estabelecimento };
+
+  if (establishment.user_id !== user.id) {
+    throw createError({
+      statusCode: 403,
+      message: "You are not authorized to access this establishment",
+    });
+  }
+
+  return { estabelecimento: establishment };
 });

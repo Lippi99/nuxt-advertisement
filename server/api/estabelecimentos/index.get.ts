@@ -1,23 +1,19 @@
-import { PrismaClient } from "@prisma/client";
+// server/api/establishments/index.get.ts
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
-
   await requireRole(event, ["admin", "employee"]);
 
-  const estabelecimentos = await prisma.establishment.findMany({
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-    },
-    orderBy: {
-      id: "asc",
-    },
-  });
+  const result = await pool.query(
+    `SELECT id, name, created_at FROM "establishment" ORDER BY id ASC`
+  );
+  const estabelecimentos = result.rows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    createdAt: row.created_at,
+  }));
 
   return { estabelecimentos };
 });

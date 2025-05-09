@@ -1,13 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   await requireRole(event, ["admin"]);
-  const body = await readBody(event);
 
+  const body = await readBody(event);
   const id = parseInt(getRouterParam(event, "id") as string);
 
   if (!Number.isInteger(id)) {
@@ -17,14 +15,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  await prisma.playlist.update({
-    where: {
-      id,
-    },
-    data: {
-      name: body.name,
-    },
-  });
+  await pool.query(
+    `
+    UPDATE "playlist"
+    SET name = $1,
+        updated_at = now()
+    WHERE id = $2
+    `,
+    [body.name, id]
+  );
 
   return setResponseStatus(event, 200);
 });

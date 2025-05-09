@@ -17,6 +17,8 @@ import DeleteButton from "~/components/ui/DeleteButton.vue";
 
 const { user } = useAuthStore();
 
+console.log(user);
+
 const toast = useToast();
 const table = useTemplateRef("table");
 
@@ -67,9 +69,8 @@ const columns: TableColumn<Monitor | any>[] = [
           () => "Excluir"
         ),
 
-        user?.role === "admin" ||
-          (user?.role === "employee" &&
-            h(
+        user?.role === "admin" || user?.role === "employee"
+          ? h(
               UButton,
               {
                 class:
@@ -85,7 +86,8 @@ const columns: TableColumn<Monitor | any>[] = [
                 },
               },
               () => (row.original.paired ? "Pareado" : "Parear")
-            )),
+            )
+          : null,
       ]);
     },
   },
@@ -273,7 +275,7 @@ const facingMode = ref("environment");
           "
           :items-per-page="table?.tableApi?.getState().pagination.pageSize"
           :total="table?.tableApi?.getFilteredRowModel().rows.length"
-          @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+          @update:page="(p: any) => table?.tableApi?.setPageIndex(p - 1)"
         />
       </div>
     </div>

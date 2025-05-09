@@ -1,38 +1,31 @@
-import { PrismaClient } from "@prisma/client";
 import { setResponseHeaders } from "h3";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, "id");
+  const code = getRouterParam(event, "id");
 
-  // Proper SSE headers
   setResponseHeaders(event, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
     Connection: "keep-alive",
   });
 
-  // Keep the connection alive (some proxies close inactive connections)
-  event.node.res.write(":\n\n"); // Comment to start stream
+  event.node.res.write(":\n\n"); // kickstart the SSE stream
 
   const interval = setInterval(async () => {
     try {
-      const monitor = await prisma.unpairedMonitor.findFirst({
-        where: { code: id },
-      });
+      const result = await pool.query(
+        `SELECT paired FROM "unpaired_monitor" WHERE code = $1 LIMIT 1`,
+        [code]
+      );
 
-      const paired = monitor?.paired ?? false;
+      const paired = result.rows[0]?.paired ?? false;
 
       event.node.res.write(`data: ${JSON.stringify({ paired })}\n\n`);
     } catch (err) {
       event.node.res.write(`event: error\ndata: ${JSON.stringify(err)}\n\n`);
     }
   }, 1000);
-
-  event.node.req.on("close", () => {
-    clearInterval(interval);
-  });
 
   event.node.req.on("close", () => {
     clearInterval(interval);

@@ -3,7 +3,7 @@ import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
 useHead({
-  title: "Editar monitor",
+  title: "Editar propaganda",
 });
 
 definePageMeta({
@@ -55,7 +55,7 @@ const { data } = await useFetch(`/api/playlists`);
 
 const state = reactive<Partial<Schema>>({
   name: advertisement.value?.advertisement.name || undefined,
-  playlistId: advertisement.value?.advertisement.playlistId || undefined,
+  playlistId: advertisement.value?.advertisement.playlist_id || undefined,
   url: [],
 });
 

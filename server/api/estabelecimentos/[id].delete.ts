@@ -1,18 +1,19 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   const user = await getAuthUser(event);
-
   await requireRole(event, ["admin"]);
 
   const id = parseInt(getRouterParam(event, "id") as string);
 
-  const establishmentToBeDeleted = await prisma.establishment.findUnique({
-    where: { id },
-  });
+  // 1. Fetch the establishment by ID
+  const result = await pool.query(
+    `SELECT id, user_id FROM "establishment" WHERE id = $1`,
+    [id]
+  );
+
+  const establishmentToBeDeleted = result.rows[0];
 
   if (!establishmentToBeDeleted) {
     throw createError({
@@ -21,25 +22,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  if (establishmentToBeDeleted.userId !== user.id) {
+  if (establishmentToBeDeleted.user_id !== user.id) {
     throw createError({
       statusCode: 403,
       message: "You are not authorized to update this establishment",
     });
   }
 
-  const establishment = await prisma.establishment.delete({
-    where: {
-      id,
-    },
-  });
-
-  if (!establishment) {
-    throw createError({
-      statusCode: 404,
-      message: "Establishment not found",
-    });
-  }
+  // 3. Delete the record
+  await pool.query(`DELETE FROM "establishment" WHERE id = $1`, [id]);
 
   return setResponseStatus(event, 200);
 });

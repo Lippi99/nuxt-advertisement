@@ -1,18 +1,18 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   await requireRole(event, ["admin"]);
+
   const id = parseInt(getRouterParam(event, "id") as string);
 
-  const user = await prisma.user.delete({
-    where: {
-      id,
-    },
-  });
+  const result = await pool.query(
+    `DELETE FROM "user" WHERE id = $1 RETURNING *`,
+    [id]
+  );
+
+  const user = result.rows[0];
 
   if (!user) {
     throw createError({

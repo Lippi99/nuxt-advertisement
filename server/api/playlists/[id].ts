@@ -1,11 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   await requireRole(event, ["admin"]);
+
   const id = parseInt(getRouterParam(event, "id") as string);
 
   if (!Number.isInteger(id)) {
@@ -15,11 +14,11 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const playlist = await prisma.playlist.findUnique({
-    where: {
-      id,
-    },
-  });
+  const result = await pool.query(`SELECT * FROM "playlist" WHERE id = $1`, [
+    id,
+  ]);
+
+  const playlist = result.rows[0];
 
   if (!playlist) {
     throw createError({
@@ -27,5 +26,6 @@ export default defineEventHandler(async (event) => {
       statusMessage: "Playlist doesn't exist",
     });
   }
+
   return { playlist };
 });

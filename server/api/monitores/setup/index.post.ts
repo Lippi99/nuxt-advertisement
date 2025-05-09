@@ -1,17 +1,17 @@
-import { PrismaClient } from "@prisma/client";
+// server/api/unpaired-monitors/create.post.ts
 import { v4 as uuidv4 } from "uuid";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async () => {
   const code = uuidv4();
 
-  await prisma.unpairedMonitor.create({
-    data: {
-      code,
-      paired: false,
-    },
-  });
+  await pool.query(
+    `
+    INSERT INTO "unpaired_monitor" (code, paired)
+    VALUES ($1, false)
+    `,
+    [code]
+  );
 
   return { code };
 });

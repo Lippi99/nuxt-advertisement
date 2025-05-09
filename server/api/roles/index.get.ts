@@ -1,21 +1,20 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
-  await getAuthUser(event);
-  await requireRole(event, ["admin"]);
-  const roles = await prisma.role.findMany();
+  // await getAuthUser(event);
+  // await requireRole(event, ["admin"]);
 
-  if (!roles) {
+  const result = await pool.query(`SELECT * FROM "role"`);
+
+  if (result.rowCount === 0) {
     throw createError({
       statusCode: 404,
-      message: "Role not found",
+      message: "No roles found",
     });
   }
 
   return {
-    roles,
+    roles: result.rows,
   };
 });

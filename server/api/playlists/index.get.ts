@@ -1,22 +1,15 @@
-import { PrismaClient } from "@prisma/client";
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   await requireRole(event, ["admin", "employee"]);
-  const playlists = await prisma.playlist.findMany({
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-    },
 
-    orderBy: {
-      id: "asc",
-    },
-  });
+  const result = await pool.query(`
+    SELECT id, name, created_at
+    FROM "playlist"
+    ORDER BY id ASC
+  `);
 
-  return { playlists };
+  return { playlists: result.rows };
 });

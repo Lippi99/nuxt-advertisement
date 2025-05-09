@@ -1,19 +1,19 @@
-import { PrismaClient } from "@prisma/client";
+// server/api/monitors/[id].delete.ts
 import { getAuthUser, requireRole } from "~/server/services/auth-service";
-
-const prisma = new PrismaClient();
+import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
-  const id = parseInt(getRouterParam(event, "id") as string);
-
   await requireRole(event, ["admin"]);
 
-  const monitor = await prisma.monitor.delete({
-    where: {
-      id,
-    },
-  });
+  const id = parseInt(getRouterParam(event, "id") as string);
+
+  const result = await pool.query(
+    `DELETE FROM "monitor" WHERE id = $1 RETURNING *`,
+    [id]
+  );
+
+  const monitor = result.rows[0];
 
   if (!monitor) {
     throw createError({
