@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
+    "start": "node .output/server/index.mjs",
     "dev": "nuxt dev",
-    "prisma": "npx prisma",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
