@@ -12,10 +12,10 @@ export default defineEventHandler(async (event) => {
       p.name AS playlist_name,
       a.id AS advertisement_id,
       a.name AS advertisement_name
-    FROM "UnpairedMonitor" um
-    JOIN "Monitor" m ON um."monitorId" = m.id
-    JOIN "Playlist" p ON m."playlistId" = p.id
-    LEFT JOIN "Advertisement" a ON a."playlistId" = p.id
+    FROM unpaired_monitor um
+    JOIN monitor m ON um.monitor_id = m.id
+    JOIN playlist p ON m.playlist_id = p.id
+    LEFT JOIN advertisement a ON a.playlist_id = p.id
     WHERE um.code = $1 AND um.paired = true
     `,
     [code]
@@ -41,15 +41,15 @@ export default defineEventHandler(async (event) => {
   if (adIds.length > 0) {
     const imageResult = await pool.query(
       `
-      SELECT id, url, "advertisementId"
-      FROM "AdvertisementImage"
-      WHERE "advertisementId" = ANY($1)
+      SELECT id, url, advertisement_id
+      FROM advertisement_image
+      WHERE advertisement_id = ANY($1)
       `,
       [adIds]
     );
 
     imageResult.rows.forEach((img) => {
-      advertisementsMap.get(img.advertisementId)?.images.push({
+      advertisementsMap.get(img.advertisement_id)?.images.push({
         id: img.id,
         url: img.url,
       });

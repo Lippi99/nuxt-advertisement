@@ -21,8 +21,7 @@ const { data: propagandas } = await useFetch(
 );
 
 const allImages = computed(() => {
-  const ads =
-    propagandas.value?.monitor?.monitor?.playlist?.advertisements || [];
+  const ads = propagandas.value?.monitor?.playlist?.advertisements || [];
   return ads.flatMap((ad) => ad.images ?? []);
 });
 
