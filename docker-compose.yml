@@ -1,0 +1,46 @@
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    ports:
+      - "${DB_PORT}:5433"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    command: -p 5433
+    networks:
+      - app-network
+
+  nuxt-app:
+    build:
+      context: .
+    container_name: nuxt-app
+    ports:
+      - "${NUXT_PORT}:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DB_HOST: postgres-db
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      NUXT_JWT_SECRET: ${NUXT_JWT_SECRET}
+      NUXT_AWS_ACCESS_KEY: ${NUXT_AWS_ACCESS_KEY}
+      NUXT_AWS_SECRET_KEY: ${NUXT_AWS_SECRET_KEY}
+      NUXT_AWS_BUCKET_NAME: ${NUXT_AWS_BUCKET_NAME}
+      NUXT_AWS_REGION: ${NUXT_AWS_REGION}
+      NUXT_PORT: ${NUXT_PORT}
+    depends_on:
+      - postgres-db
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+
+networks:
+  app-network:

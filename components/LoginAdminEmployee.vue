@@ -20,6 +20,8 @@ const state = ref<Partial<Schema>>({
   password: undefined,
 });
 
+const emit = defineEmits(["isRegister"]);
+
 const toast = useToast();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isSubmitting.value = true;
@@ -85,6 +87,21 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         type="submit"
       >
         Submit
+      </UButton>
+    </div>
+    <div class="text-center mt-3.5">
+      <span>OR</span>
+    </div>
+
+    <div class="flex items-center justify-center mt-3.5">
+      <UButton
+        variant="ghost"
+        @click="emit('isRegister', true)"
+        color="secondary"
+        class="cursor-pointer flex items-center justify-center max-w-52 w-full"
+        type="button"
+      >
+        Register
       </UButton>
     </div>
   </UForm>

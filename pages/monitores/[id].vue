@@ -48,8 +48,8 @@ watchEffect(() => {
 
 const state = reactive<Partial<Schema>>({
   name: data.value?.monitor?.name || undefined,
-  establishmentId: data?.value?.monitor?.establishmentId || undefined,
-  playlistId: data?.value?.monitor.playlistId || undefined,
+  establishmentId: data?.value?.monitor?.establishment_id || undefined,
+  playlistId: data?.value?.monitor.playlist_id || undefined,
 });
 
 const isSubmitting = ref(false);

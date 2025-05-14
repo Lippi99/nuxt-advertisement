@@ -4,10 +4,10 @@ export type Monitor = {
   id: number;
   name: string;
   establishment: Estabelecimento;
-  establishmentId: number;
+  establishment_id: number;
   paired: boolean;
   code: string;
-  playlistId: number;
+  playlist_id: number;
   _count: {
     images: number;
   };

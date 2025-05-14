@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
   const establishmentId = parseInt(body.establishmentId);
-  const playlistId = parseInt(body.playlistId);
+  const playlistId = parseInt(body.playlistId) || undefined;
 
   await pool.query(
     `

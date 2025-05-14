@@ -15,6 +15,7 @@ const client = new S3Client({
     accessKeyId: runtimeConfig.awsAccessKey,
     secretAccessKey: runtimeConfig.awsSecretKey,
   },
+  region: runtimeConfig.awsRegion,
 });
 
 async function createBucket() {
@@ -22,7 +23,7 @@ async function createBucket() {
     const command = new CreateBucketCommand({
       Bucket: runtimeConfig.awsBucketName,
       CreateBucketConfiguration: {
-        LocationConstraint: runtimeConfig.AWS_REGION,
+        LocationConstraint: runtimeConfig.awsRegion as any,
       },
     });
     const bucketExists = await checkIfBucketExists(runtimeConfig.awsBucketName);

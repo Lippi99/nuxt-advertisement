@@ -4,7 +4,7 @@ import { getAuthUser } from "~/server/services/auth-service";
 import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
-  await getAuthUser(event);
+  // await getAuthUser(event);
 
   const { name, lastName, email, roleId, birth, password } = await readBody(
     event
