@@ -38,7 +38,7 @@ const welcomeUser = computed(() => `Bem vindo(a), ${authStore.user?.name}`);
 
     <!-- Sidebar content -->
     <div class="py-5 h-full mt-8 flex flex-col relative">
-      <h1 class="text-center mt-4 text-xl">{{ welcomeUser }}</h1>
+      <h1 class="text-center text-xl">{{ welcomeUser }}</h1>
       <ul class="mt-4 text-lg">
         <li v-if="authStore.user?.role === 'admin'">
           <NuxtLink

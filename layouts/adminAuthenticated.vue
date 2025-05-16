@@ -8,8 +8,8 @@ const { handleSidebar } = useSidebarStore();
 <template>
   <div class="flex min-h-screen overflow-y-hidden">
     <AuthSidebar />
-
-    <main class="relative flex-1 ml-0 md:ml-12 py-5">
+    <main class="relative flex-1 ml-0">
+      <Header />
       <button
         type="button"
         class="cursor-pointer p-4 md:hidden text-white"
@@ -18,7 +18,7 @@ const { handleSidebar } = useSidebarStore();
         <UIcon class="text-4xl" name="i-heroicons-bars-3" />
       </button>
 
-      <div class="px-4 mt-11">
+      <div class="px-4 md:pl-12 py-5">
         <slot name="#header" />
         <slot />
       </div>

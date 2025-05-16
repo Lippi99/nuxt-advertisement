@@ -27,9 +27,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   isSubmitting.value = true;
   try {
     const result = await authStore.login(event.data.email, event.data.password);
-    console.log(result);
 
-    if (result) {
+    if (!result.error) {
       router.push("/estabelecimentos");
       toast.add({
         title: "Success",
@@ -39,7 +38,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     } else {
       toast.add({
         title: "Error",
-        description: "Senha ou usuário inválido",
+        description: (result.error as any).data.message,
         color: "error",
       });
     }

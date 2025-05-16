@@ -4,14 +4,7 @@ const sw = process.env.SW === "true";
 
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
-  nitro: {
-    // preset: "node",
-    // prerender: {
-    //   autoSubfolderIndex: false,
-    //   crawlLinks: true,
-    //   failOnError: false,
-    // },
-  },
+  nitro: {},
   devtools: { enabled: true },
   ssr: true,
 
@@ -21,6 +14,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "nuxt-qrcode",
     "@vite-pwa/nuxt",
+    "@unlok-co/nuxt-stripe",
   ],
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
@@ -29,6 +23,10 @@ export default defineNuxtConfig({
     awsBucketName: "",
     awsRegion: "",
     jwtSecret: "",
+    stripeSecretKey: "",
+    stripeProductBasic: "",
+    stripeProductPremium: "",
+    stripeWebhookSecretKey: "",
   },
 
   pwa: {
@@ -72,6 +70,15 @@ export default defineNuxtConfig({
       navigateFallback: "/",
       navigateFallbackAllowlist: [/^\/$/],
       type: "module",
+    },
+  },
+
+  stripe: {
+    client: {
+      key: process.env.STRIPE_CLIENT_KEY,
+    },
+    server: {
+      key: process.env.NUXT_STRIPE_SECRET_KEY,
     },
   },
 });

@@ -2,8 +2,12 @@
 import bcrypt from "bcryptjs";
 import { getAuthUser } from "~/server/services/auth-service";
 import { pool } from "~/server/services/db";
+import { defineEventHandler } from "h3";
+
+import { useServerStripe } from "#stripe/server";
 
 export default defineEventHandler(async (event) => {
+  const stripe = await useServerStripe(event);
   // await getAuthUser(event);
 
   const { name, lastName, email, roleId, birth, password } = await readBody(
@@ -49,13 +53,23 @@ export default defineEventHandler(async (event) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  const customer = await stripe.customers.create({ email });
+
   const result = await pool.query(
     `
-    INSERT INTO "user" (name, last_name, email, password, role_id, birth, created_at, updated_at)
-    VALUES ($1, $2, $3, $4, $5, $6, now(), now())
-    RETURNING id, name, last_name, email, role_id, birth
+    INSERT INTO "user" (name, last_name, email, password, role_id, birth, stripe_customer_id, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, now(), now())
+    RETURNING id, name, last_name, email, role_id, birth, stripe_customer_id
     `,
-    [name, lastName, email, hashedPassword, parseInt(roleId), new Date(birth)]
+    [
+      name,
+      lastName,
+      email,
+      hashedPassword,
+      parseInt(roleId),
+      new Date(birth),
+      customer.id,
+    ]
   );
 
   const user = result.rows[0];

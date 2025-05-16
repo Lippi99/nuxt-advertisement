@@ -100,7 +100,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 <template>
   <NuxtLayout name="admin-authenticated">
     <slot name="header">
-      <EditTitleAction title="Usuário" to="/usuarios" />
+      <EditTitleAction title="Users" to="/users" />
     </slot>
 
     <FormContainer class="px-0">

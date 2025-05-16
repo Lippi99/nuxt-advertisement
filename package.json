@@ -17,6 +17,7 @@
     "@nuxt/ui": "^3.0.2",
     "@nuxthub/core": "0.8.25",
     "@pinia/nuxt": "0.10.1",
+    "@unlok-co/nuxt-stripe": "5.0.0",
     "@vite-pwa/nuxt": "1.0.0",
     "bcryptjs": "^3.0.2",
     "clsx": "^2.1.1",

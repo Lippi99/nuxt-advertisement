@@ -35,12 +35,20 @@ export const useAuthStore = defineStore("auth", {
           body: { email, password },
         });
 
-        this.setUser(response?.user);
+        this.setUser(response?.user as User);
 
-        return true;
+        return {
+          response,
+          error: null,
+          ok: true,
+        };
       } catch (error) {
         console.error("Login error:", error);
-        return false;
+        return {
+          response: null,
+          error,
+          ok: false,
+        };
       }
     },
 
