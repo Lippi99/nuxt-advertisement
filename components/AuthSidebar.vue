@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { useSidebarStore } from "~/stores/sidebar";
 
+const { data } = await useFetch("/api/organizacoes", {
+  method: "GET",
+});
+
 const sidebarStore = useSidebarStore();
 const authStore = useAuthStore();
 
@@ -14,6 +18,8 @@ const handleLogout = async () => {
 };
 
 const welcomeUser = computed(() => `Bem vindo(a), ${authStore.user?.name}`);
+
+const value = ref(authStore.user?.organization);
 </script>
 
 <template>
@@ -39,6 +45,23 @@ const welcomeUser = computed(() => `Bem vindo(a), ${authStore.user?.name}`);
     <!-- Sidebar content -->
     <div class="py-5 h-full mt-8 flex flex-col relative">
       <h1 class="text-center text-xl">{{ welcomeUser }}</h1>
+
+      <div class="flex items-center justify-center mt-8">
+        <UTooltip
+          :content="{
+            align: 'end',
+            side: 'top',
+            sideOffset: 8,
+          }"
+          :delay-duration="0"
+          text="Esta é sua organização"
+        >
+          <UButton class="text-md" size="lg" color="neutral" variant="soft">{{
+            data?.organizations[0]?.organization_name
+          }}</UButton>
+        </UTooltip>
+      </div>
+
       <ul class="mt-4 text-lg">
         <li v-if="authStore.user?.role === 'admin'">
           <NuxtLink

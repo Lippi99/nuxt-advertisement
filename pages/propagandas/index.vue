@@ -30,11 +30,11 @@ const columns: TableColumn<Monitor | any>[] = [
   },
   {
     accessorKey: "name",
-    header: "Nome",
+    header: "Playlist",
   },
   {
     accessorKey: "_count",
-    header: "Qtd.",
+    header: "Qtd. de propagandas",
     cell: (value) => `${value.row.original._count.images}`,
   },
 

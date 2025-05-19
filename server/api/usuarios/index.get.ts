@@ -1,9 +1,14 @@
-import { getAuthUser, requireRole } from "~/server/services/auth-service";
+import {
+  activeSubscription,
+  getAuthUser,
+  requireRole,
+} from "~/server/services/auth-service";
 import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   const user = await getAuthUser(event);
   await requireRole(event, ["admin"]);
+  await activeSubscription(event);
 
   const result = await pool.query(
     `

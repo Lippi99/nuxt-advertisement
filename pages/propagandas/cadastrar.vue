@@ -12,9 +12,6 @@ definePageMeta({
 });
 
 const schema = z.object({
-  name: z
-    .string({ message: "Campo obrigatório" })
-    .min(4, "Must be at least 4 characters"),
   playlistId: z
     .number({ message: "Campo obrigatório" })
     .int({ message: "Campo obrigatório" }),
@@ -28,7 +25,6 @@ const schema = z.object({
 type Schema = z.output<typeof schema>;
 
 const state = reactive<Partial<Schema>>({
-  name: undefined,
   playlistId: undefined,
   url: [],
 });
@@ -63,7 +59,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     await $fetch("/api/propagandas", {
       method: "POST",
       body: {
-        name: event.data.name,
         url: event.data.url,
         playlistId: event.data.playlistId,
       },
@@ -74,7 +69,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       color: "success",
     });
 
-    state.name = undefined;
     state.playlistId = undefined;
     state.url = undefined;
   } catch {
@@ -97,15 +91,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     <FormContainer>
       <UForm :schema="schema" :state="state" @submit="onSubmit">
-        <UFormField label="Nome da propaganda" name="name" required>
-          <UInput
-            size="lg"
-            class="w-full mt-2"
-            v-model="state.name"
-            type="text"
-          />
-        </UFormField>
-
         <UFormField
           class="mt-8"
           label="Nome da playlist"

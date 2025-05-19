@@ -1,9 +1,14 @@
-import { getAuthUser, requireRole } from "~/server/services/auth-service";
+import {
+  activeSubscription,
+  getAuthUser,
+  requireRole,
+} from "~/server/services/auth-service";
 import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
-  await getAuthUser(event);
+  const user = await getAuthUser(event);
   await requireRole(event, ["admin"]);
+  await activeSubscription(event);
 
   const body = await readBody(event);
   const id = parseInt(getRouterParam(event, "id") as string);
@@ -15,15 +20,25 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  await pool.query(
+  const result = await pool.query(
     `
-    UPDATE "playlist"
+    UPDATE playlist
     SET name = $1,
         updated_at = now()
-    WHERE id = $2
+    WHERE id = $2 AND organization_id = $3
+    RETURNING *
     `,
-    [body.name, id]
+    [body.name, id, user.organization_id]
   );
+
+  const playlist = result.rows[0];
+
+  if (!playlist) {
+    throw createError({
+      statusCode: 404,
+      message: "Playlist not found or you don't have permission to update it",
+    });
+  }
 
   return setResponseStatus(event, 200);
 });

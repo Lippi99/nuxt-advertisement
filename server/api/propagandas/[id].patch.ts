@@ -1,11 +1,16 @@
-import { getAuthUser, requireRole } from "~/server/services/auth-service";
+import {
+  activeSubscription,
+  getAuthUser,
+  requireRole,
+} from "~/server/services/auth-service";
 import { uploadFiles } from "~/server/services/aws-s3-service";
 import { pool } from "~/server/services/db";
 import { generateKey } from "~/utils/aws";
 
 export default defineEventHandler(async (event) => {
-  await getAuthUser(event);
+  const user = await getAuthUser(event);
   await requireRole(event, ["admin"]);
+  await activeSubscription(event);
 
   const body = await readBody(event);
   const playlistId = parseInt(body.playlistId);
@@ -37,13 +42,12 @@ export default defineEventHandler(async (event) => {
   const updateResult = await pool.query(
     `
     UPDATE "advertisement"
-    SET name = $1,
-        playlist_id = $2,
+        playlist_id = $1,
         updated_at = now()
-    WHERE id = $3
+    WHERE id = $2 AND organization_id = $3
     RETURNING id
     `,
-    [body.name, playlistId, id]
+    [playlistId, id, user.organization_id]
   );
 
   const advertisement = updateResult.rows[0];

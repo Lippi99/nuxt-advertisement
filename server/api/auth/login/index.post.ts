@@ -1,14 +1,15 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { UserRole } from "~/types/role";
 import { pool } from "~/server/services/db";
+import { activeSubscription } from "~/server/services/auth-service";
+import dayjs from "dayjs";
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event);
   const config = useRuntimeConfig();
 
   const userResult = await pool.query(
-    `SELECT id, email, name, last_name, password, role_id
+    `SELECT id, email, name, is_subscribed, last_name, password, role_id
        FROM "user"
        WHERE email = $1`,
     [email]
@@ -19,7 +20,7 @@ export default defineEventHandler(async (event) => {
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw createError({
       statusCode: 401,
-      message: "Invalid credentials",
+      message: "Credenciais inválidas",
     });
   }
 
@@ -53,6 +54,7 @@ export default defineEventHandler(async (event) => {
       name: user.name,
       lastName: user.last_name,
       role: role.name,
+      isSubscribed: user.is_subscribed,
     },
   };
 });

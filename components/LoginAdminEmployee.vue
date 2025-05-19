@@ -29,27 +29,30 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     const result = await authStore.login(event.data.email, event.data.password);
 
     if (!result.error) {
-      router.push("/estabelecimentos");
+      console.log(result);
+      await navigateTo("/estabelecimentos");
+
       toast.add({
         title: "Success",
         description: "The form has been submitted.",
         color: "success",
       });
     } else {
-      toast.add({
-        title: "Error",
-        description: (result.error as any).data.message,
-        color: "error",
-      });
+      throw result.error;
     }
+  } catch (error: any) {
+    console.log(error);
 
-    isSubmitting.value = false;
-  } catch (error) {
+    const errorMessage =
+      error?.response?._data?.message || "There was an error when logging in";
+
     toast.add({
       title: "Error",
-      description: "There was an error when log in",
+      description: errorMessage,
       color: "error",
     });
+  } finally {
+    isSubmitting.value = false;
   }
 }
 </script>

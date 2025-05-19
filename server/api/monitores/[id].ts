@@ -1,9 +1,14 @@
-import { getAuthUser, requireRole } from "~/server/services/auth-service";
+import {
+  activeSubscription,
+  getAuthUser,
+  requireRole,
+} from "~/server/services/auth-service";
 import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
-  await getAuthUser(event);
+  const user = await getAuthUser(event);
   await requireRole(event, ["admin"]);
+  await activeSubscription(event);
 
   const id = parseInt(getRouterParam(event, "id") as string);
 
@@ -14,16 +19,23 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const result = await pool.query(`SELECT * FROM "monitor" WHERE id = $1`, [
-    id,
-  ]);
+  const result = await pool.query(
+    `
+    SELECT m.*
+    FROM monitor m
+    JOIN establishment e ON m.establishment_id = e.id
+    WHERE m.id = $1
+      AND e.organization_id = $2
+    `,
+    [id, user.organization_id]
+  );
 
   const monitor = result.rows[0];
 
   if (!monitor) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Monitor doesn't exist",
+      statusMessage: "Monitor doesn't exist or you don't have access",
     });
   }
 

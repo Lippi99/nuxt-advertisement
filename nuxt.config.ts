@@ -16,6 +16,9 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "@unlok-co/nuxt-stripe",
   ],
+  // ui: {
+  //   fonts: false,
+  // },
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
     awsAccessKey: "",

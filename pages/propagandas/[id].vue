@@ -15,9 +15,6 @@ const route = useRoute();
 
 const schema = z
   .object({
-    name: z
-      .string({ message: "Campo obrigatório" })
-      .min(4, "Must be at least 4 characters"),
     playlistId: z
       .number({ message: "Campo obrigatório" })
       .int({ message: "Campo obrigatório" }),
@@ -54,7 +51,6 @@ const { data: advertisement, refresh } = await useFetch(
 const { data } = await useFetch(`/api/playlists`);
 
 const state = reactive<Partial<Schema>>({
-  name: advertisement.value?.advertisement.name || undefined,
   playlistId: advertisement.value?.advertisement.playlist_id || undefined,
   url: [],
 });
@@ -86,7 +82,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     await $fetch(`/api/propagandas/${id}`, {
       method: "PATCH",
       body: {
-        name: event.data.name,
         url: event.data.url,
         playlistId: event.data.playlistId,
       },
@@ -145,15 +140,6 @@ const hasImages = computed(
 
     <FormContainer>
       <UForm :schema="schema" :state="state" @submit="onSubmit">
-        <UFormField label="Nome da propaganda" name="name" required>
-          <UInput
-            size="lg"
-            class="w-full mt-2"
-            v-model="state.name"
-            type="text"
-          />
-        </UFormField>
-
         <UFormField
           class="mt-8"
           label="Nome da playlist"
@@ -206,9 +192,7 @@ const hasImages = computed(
         </div>
 
         <div class="my-8">
-          <UModal
-            :title="`Imagens / vídeos da propaganda ${advertisement?.advertisement.name}`"
-          >
+          <UModal title="Imagens / vídeos da propaganda">
             <UButton
               class="cursor-pointer"
               size="lg"

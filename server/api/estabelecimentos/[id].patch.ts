@@ -1,8 +1,13 @@
-import { getAuthUser, requireRole } from "~/server/services/auth-service";
+import {
+  activeSubscription,
+  getAuthUser,
+  requireRole,
+} from "~/server/services/auth-service";
 import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   const user = await getAuthUser(event);
+  await activeSubscription(event);
   const body = await readBody(event);
   const id = parseInt(getRouterParam(event, "id") as string);
 
@@ -10,8 +15,8 @@ export default defineEventHandler(async (event) => {
 
   // 1. Check if establishment exists
   const result = await pool.query(
-    `SELECT id, user_id FROM "establishment" WHERE id = $1`,
-    [id]
+    `SELECT id, user_id FROM "establishment" WHERE id = $1 AND organization_id = $2`,
+    [id, user.organization_id]
   );
 
   const establishment = result.rows[0];
@@ -23,20 +28,12 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // 2. Check ownership
-  if (establishment.user_id !== user.id) {
-    throw createError({
-      statusCode: 403,
-      message: "You are not authorized to update this establishment",
-    });
-  }
-
   // 3. Update the name
   await pool.query(
     `UPDATE "establishment"
-     SET name = $1, updated_at = now()
-     WHERE id = $2`,
-    [body.name, id]
+     SET name = $1, organization_id = $2 updated_at = now()
+     WHERE id = $3`,
+    [body.name, user.organization_id, id]
   );
 
   return setResponseStatus(event, 200);

@@ -15,7 +15,6 @@ import type { Estabelecimento } from "~/types/establishment";
 import UpdateButton from "~/components/ui/UpdateButton.vue";
 import DeleteButton from "~/components/ui/DeleteButton.vue";
 
-const { checkout } = useStripe();
 const { user } = useAuthStore();
 
 const toast = useToast();
@@ -113,8 +112,6 @@ const handleDeleteEstablishment = async () => {
         role="admin"
       />
     </slot>
-
-    <UButton @click="checkout" color="primary" class="mt-4">Test</UButton>
 
     <div class="w-full space-y-4 pb-4 mt-12">
       <UTable

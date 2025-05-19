@@ -1,10 +1,15 @@
-import { getAuthUser, requireRole } from "~/server/services/auth-service";
+import {
+  activeSubscription,
+  getAuthUser,
+  requireRole,
+} from "~/server/services/auth-service";
 import { deleteFile } from "~/server/services/aws-s3-service";
 import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   await requireRole(event, ["admin"]);
+  await activeSubscription(event);
 
   const id = parseInt(getRouterParam(event, "id") as string);
 

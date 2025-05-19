@@ -30,15 +30,15 @@ export const useAuthStore = defineStore("auth", {
 
     async login(email: string, password: string) {
       try {
-        const response = await $fetch("/api/auth/login", {
+        const response = await $fetch<{ user: User }>("/api/auth/login", {
           method: "POST",
           body: { email, password },
         });
 
-        this.setUser(response?.user as User);
+        this.setUser(response?.user);
 
         return {
-          response,
+          isSubscribed: response.user?.isSubscribed,
           error: null,
           ok: true,
         };
@@ -62,7 +62,7 @@ export const useAuthStore = defineStore("auth", {
             Authorization: `Bearer ${token.value}`,
           },
         });
-        console.log("token", token.value);
+
         token.value = null;
       } catch {
         console.log("erro interno");

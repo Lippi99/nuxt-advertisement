@@ -2,6 +2,7 @@ import { getCookie, createError, type H3Event } from "h3";
 import jwt from "jsonwebtoken";
 import { UserRole } from "~/types/role";
 import { pool } from "./db";
+import dayjs from "dayjs";
 
 export async function getAuthUser(event: H3Event) {
   const config = useRuntimeConfig();
@@ -44,4 +45,19 @@ export async function requireRole(event: H3Event, allowedRoles: UserRole[]) {
   }
 
   return user;
+}
+
+export async function activeSubscription(event: H3Event) {
+  const user = await getAuthUser(event);
+
+  const isSubscriptionEnded = dayjs().isBefore(
+    user.subscription_current_period_end
+  );
+
+  if (user && !isSubscriptionEnded) {
+    throw createError({
+      statusCode: 403,
+      message: "Você precisa estar com uma assinatura ativa",
+    });
+  }
 }

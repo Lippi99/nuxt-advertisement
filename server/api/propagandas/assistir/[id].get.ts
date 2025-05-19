@@ -21,9 +21,10 @@ export default defineEventHandler(async (event) => {
     [code]
   );
 
-  if (result.rowCount === 0) return { monitor: null };
+  if (result.rowCount === 0) {
+    return { monitor: null };
+  }
 
-  // Group by advertisement
   const rows = result.rows;
   const advertisementsMap = new Map<number, { id: number; images: any[] }>();
 
@@ -36,7 +37,6 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Fetch all images related to those advertisements
   const adIds = [...advertisementsMap.keys()];
   if (adIds.length > 0) {
     const imageResult = await pool.query(

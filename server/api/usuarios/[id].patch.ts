@@ -1,10 +1,15 @@
 import bcrypt from "bcryptjs";
-import { getAuthUser, requireRole } from "~/server/services/auth-service";
+import {
+  activeSubscription,
+  getAuthUser,
+  requireRole,
+} from "~/server/services/auth-service";
 import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
   await getAuthUser(event);
   await requireRole(event, ["admin"]);
+  await activeSubscription(event);
 
   const { name, lastName, email, roleId, birth, password } = await readBody(
     event

@@ -7,5 +7,6 @@ export interface User {
   birth: string;
   isSubscribed: boolean;
   lastName: string;
+  organization: number | null;
   role: UserRole;
 }

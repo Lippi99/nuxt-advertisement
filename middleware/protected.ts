@@ -11,6 +11,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo("/login");
   }
 
+  if (!authStore.user.organization) {
+    return navigateTo("/criar-organizacao");
+  }
+
   const allowedRoles = to.meta.roles as UserRole[] | undefined;
   const userRole = authStore.user.role as UserRole;
 
