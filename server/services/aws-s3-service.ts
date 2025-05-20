@@ -7,6 +7,9 @@ import {
   S3ServiceException,
 } from "@aws-sdk/client-s3";
 import { base64ToBuffer } from "~/utils/image";
+import { pool } from "./db";
+
+const MAX_STORAGE_BYTES = 1_000_000_000; // 1gb
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -56,19 +59,49 @@ async function checkIfBucketExists(bucketName: string) {
 }
 
 export async function uploadFiles(
-  baseKey: string,
-  files: string[]
+  organizationId: number,
+  files: string[],
+  organizationName: string
 ): Promise<string[]> {
   await createBucket();
 
+  console.log(organizationName);
+
   const urls: string[] = [];
 
+  // Sanitizar nome da organização como pasta
+  const sanitizedOrg = organizationName
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // remove acentos
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-"); // espaços => hífens
+
+  // Calcular tamanho total
+  const uploadSizes = files.map((f) => base64ToBuffer(f).buffer.length);
+  const totalUploadSize = uploadSizes.reduce((acc, size) => acc + size, 0);
+
+  // Verificar limite de uso
+  const orgUsageResult = await pool.query(
+    `SELECT COALESCE(SUM(file_size_bytes), 0) AS total FROM organization_files WHERE organization_id = $1`,
+    [organizationId]
+  );
+
+  const usedBytes = Number(orgUsageResult.rows[0].total);
+
+  if (usedBytes + totalUploadSize > MAX_STORAGE_BYTES) {
+    throw createError({
+      statusCode: 400,
+      message: "Limite de armazenamento da organização atingido.",
+    });
+  }
+
+  // Upload
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const { buffer, contentType } = base64ToBuffer(file);
-    const keyFolder = baseKey;
 
-    const key = `${keyFolder}-propaganda-${i}.png`;
+    const key = `${sanitizedOrg}/propaganda-${Date.now()}-${i}.png`;
 
     const command = new PutObjectCommand({
       Bucket: runtimeConfig.awsBucketName,
@@ -79,10 +112,15 @@ export async function uploadFiles(
 
     try {
       await client.send(command);
-      const url = generateUrl(key);
-      urls.push(url);
+
+      await pool.query(
+        `INSERT INTO organization_files (organization_id, file_name, file_size_bytes, s3_key) VALUES ($1, $2, $3, $4)`,
+        [organizationId, key, buffer.length, key]
+      );
+
+      urls.push(generateUrl(key));
     } catch (caught) {
-      console.error(`❌ Failed to upload file ${i}:`, caught);
+      console.error(`❌ Falha no upload do arquivo ${i}:`, caught);
       throw caught;
     }
   }
@@ -108,8 +146,6 @@ export async function deleteFile(key: string): Promise<void> {
 export function generateKey({
   prefix,
   userId,
-  originalName,
-  extension,
 }: {
   prefix: string;
   userId: string;

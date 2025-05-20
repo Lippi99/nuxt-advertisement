@@ -35,13 +35,29 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const key = generateKey({
-    prefix: "uploads",
-    originalName: `${playlistId}-${body.name}`,
-    extension: "png",
-  });
+  const result = await pool.query(
+    `
+    SELECT 
+      u.id,
+      u.name,
+      u.email,
+      u.role_id,
+      u.organization_id,
+      o.name AS organization_name
+    FROM "user" u
+    LEFT JOIN "organization" o ON u.organization_id = o.id
+    WHERE u.id = $1
+    `,
+    [user.id]
+  );
 
-  const uploadedUrls = await uploadFiles(key, body.url as string[]);
+  const organization = result.rows[0];
+
+  const uploadedUrls = await uploadFiles(
+    user.organization_id,
+    body.url as string[],
+    organization.organization_name
+  );
 
   // ✅ Insert advertisement and get ID
   const adResult = await pool.query(
