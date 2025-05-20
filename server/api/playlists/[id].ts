@@ -6,7 +6,7 @@ import {
 import { pool } from "~/server/services/db";
 
 export default defineEventHandler(async (event) => {
-  await getAuthUser(event);
+  const user = await getAuthUser(event);
   await requireRole(event, ["admin"]);
   await activeSubscription(event);
 
@@ -19,16 +19,22 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const result = await pool.query(`SELECT * FROM "playlist" WHERE id = $1`, [
-    id,
-  ]);
+  // Buscar a playlist da mesma organização do usuário
+  const result = await pool.query(
+    `
+    SELECT *
+    FROM "playlist"
+    WHERE id = $1 AND organization_id = $2
+    `,
+    [id, user.organization_id]
+  );
 
   const playlist = result.rows[0];
 
   if (!playlist) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Playlist doesn't exist",
+      statusMessage: "Playlist not found or not accessible",
     });
   }
 

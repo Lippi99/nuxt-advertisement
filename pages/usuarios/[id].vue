@@ -1,4 +1,8 @@
-<script lang="ts" setup>
+<script></script>
+
+<template></template>
+
+<!-- <script lang="ts" setup>
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import dayjs from "dayjs";
@@ -190,10 +194,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             :loading="isSubmitting"
             class="cursor-pointer py-2.5 mt-8 max-w-xs w-full flex items-center justify-center"
             type="submit"
-            >Atualizar</UButton
+            >Cadastrar</UButton
           >
         </div>
       </UForm>
     </FormContainer>
   </NuxtLayout>
-</template>
+</template> -->

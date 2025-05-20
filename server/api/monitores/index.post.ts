@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
   await pool.query(
     `
     INSERT INTO monitor (name, establishment_id, playlist_id, organization_id, created_at, updated_at)
-    VALUES ($1, $2, $3, now(), now())
+    VALUES ($1, $2, $3, $4, now(), now())
     `,
     [body.name, establishmentId, playlistId, user.organization_id]
   );

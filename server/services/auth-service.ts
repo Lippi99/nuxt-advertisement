@@ -50,11 +50,21 @@ export async function requireRole(event: H3Event, allowedRoles: UserRole[]) {
 export async function activeSubscription(event: H3Event) {
   const user = await getAuthUser(event);
 
-  const isSubscriptionEnded = dayjs().isBefore(
-    user.subscription_current_period_end
+  if (!user.organization_id) {
+    throw createError({
+      statusCode: 403,
+      message: "Usuário não está associado a uma organização",
+    });
+  }
+
+  const orgResult = await pool.query(
+    `SELECT subscription_status FROM organization WHERE id = $1`,
+    [user.organization_id]
   );
 
-  if (user && !isSubscriptionEnded) {
+  const organization = orgResult.rows[0];
+
+  if (!organization || organization.subscription_status !== "active") {
     throw createError({
       statusCode: 403,
       message: "Você precisa estar com uma assinatura ativa",

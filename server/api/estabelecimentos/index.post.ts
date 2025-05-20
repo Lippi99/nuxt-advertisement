@@ -15,9 +15,9 @@ export default defineEventHandler(async (event) => {
   await pool.query(
     `
     INSERT INTO "establishment" (name, user_id, organization_id, created_at, updated_at)
-    VALUES ($1, $2, now(), now())
+    VALUES ($1, $2, $3, now(), now())
     `,
-    [body.name, user.id, body.organization_id]
+    [body.name, user.id, user.organization_id]
   );
 
   return setResponseStatus(event, 201);

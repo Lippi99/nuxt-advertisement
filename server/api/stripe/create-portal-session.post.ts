@@ -6,26 +6,28 @@ import { pool } from "~/server/services/db";
 export default defineEventHandler(async (event) => {
   try {
     const stripe = await useServerStripe(event);
-    const session = await getAuthUser(event);
+    const user = await getAuthUser(event);
 
     const baseUrl = "http://localhost:3000";
 
-    if (!session) {
+    if (!user) {
       return { error: "User not authenticated" };
     }
 
-    const account = await pool.query(`SELECT * FROM "user" WHERE email = $1`, [
-      session.email,
-    ]);
+    // Buscar stripe_customer_id da ORGANIZAÇÃO
+    const orgResult = await pool.query(
+      `SELECT stripe_customer_id FROM "organization" WHERE id = $1`,
+      [user.organization_id]
+    );
 
-    const customer = account.rows[0];
+    const organization = orgResult.rows[0];
 
-    if (!customer.stripe_customer_id) {
-      return { error: "Stripe customer not found" };
+    if (!organization?.stripe_customer_id) {
+      return { error: "Stripe customer not found for organization." };
     }
 
     const portalSession = await stripe.billingPortal.sessions.create({
-      customer: customer.stripe_customer_id,
+      customer: organization.stripe_customer_id,
       return_url: baseUrl,
     });
 
@@ -33,7 +35,7 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     throw createError({
       statusCode: 500,
-      message: error as string,
+      message: error instanceof Error ? error.message : String(error),
     });
   }
 });

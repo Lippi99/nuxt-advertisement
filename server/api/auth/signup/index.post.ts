@@ -1,20 +1,20 @@
-// server/api/users/create.post.ts
 import bcrypt from "bcryptjs";
-import { getAuthUser } from "~/server/services/auth-service";
 import { pool } from "~/server/services/db";
-import { defineEventHandler } from "h3";
-
-import { useServerStripe } from "#stripe/server";
+import { defineEventHandler, getHeader } from "h3";
+import { getAuthUser } from "~/server/services/auth-service";
 
 export default defineEventHandler(async (event) => {
-  const stripe = await useServerStripe(event);
-  // await getAuthUser(event);
+  const {
+    name,
+    lastName,
+    email,
+    roleId,
+    birth,
+    password,
+    organization_id: bodyOrganizationId,
+  } = await readBody(event);
 
-  const { name, lastName, email, roleId, birth, password } = await readBody(
-    event
-  );
-
-  // Validate required fields
+  // 1. Validação dos campos obrigatórios
   if (!name || !email || !password || !lastName || !roleId || !birth) {
     throw createError({
       statusCode: 400,
@@ -39,7 +39,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Check if email already exists
   const userExists = await pool.query(
     `SELECT id FROM "user" WHERE email = $1`,
     [email]
@@ -51,15 +50,29 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  // 4. Determina organization_id: interno (usuário logado) ou externo (cadastro público)
+  let finalOrganizationId = bodyOrganizationId;
+
+  try {
+    const authUser = await getAuthUser(event);
+    if (authUser?.organization_id) {
+      finalOrganizationId = authUser.organization_id;
+    }
+  } catch {
+    // Ignora se não estiver autenticado (cadastro público)
+  }
+
+  // 5. Criptografa a senha
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const customer = await stripe.customers.create({ email });
-
+  // 6. Cria o usuário
   const result = await pool.query(
     `
-    INSERT INTO "user" (name, last_name, email, password, role_id, birth, stripe_customer_id, created_at, updated_at)
+    INSERT INTO "user" (
+      name, last_name, email, password, role_id, birth, organization_id, created_at, updated_at
+    )
     VALUES ($1, $2, $3, $4, $5, $6, $7, now(), now())
-    RETURNING id, name, last_name, email, role_id, birth, stripe_customer_id
+    RETURNING id, name, last_name, email, role_id, birth, organization_id
     `,
     [
       name,
@@ -68,7 +81,7 @@ export default defineEventHandler(async (event) => {
       hashedPassword,
       parseInt(roleId),
       new Date(birth),
-      customer.id,
+      finalOrganizationId,
     ]
   );
 

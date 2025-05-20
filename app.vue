@@ -6,8 +6,13 @@ useHead({
 const auth = useAuthStore();
 const { checkout } = useStripe();
 
-const isAuthenticatedAndNotSubscribed = computed(
-  () => auth.isAuthenticated && !auth.user?.isSubscribed
+const showSubscriptionModal = computed<boolean>(
+  () =>
+    !!(
+      auth.isAuthenticated &&
+      auth.user?.organization &&
+      !auth.user.isSubscribed
+    )
 );
 </script>
 
@@ -18,7 +23,7 @@ const isAuthenticatedAndNotSubscribed = computed(
     <NuxtPage />
 
     <UModal
-      v-model:open="isAuthenticatedAndNotSubscribed"
+      v-model:open="showSubscriptionModal"
       :dismissible="false"
       :close="{ class: 'hidden' }"
     >

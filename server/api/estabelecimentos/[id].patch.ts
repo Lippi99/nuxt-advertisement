@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
   // 3. Update the name
   await pool.query(
     `UPDATE "establishment"
-     SET name = $1, organization_id = $2 updated_at = now()
+     SET name = $1, organization_id = $2, updated_at = now()
      WHERE id = $3`,
     [body.name, user.organization_id, id]
   );

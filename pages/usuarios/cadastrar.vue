@@ -61,8 +61,6 @@ const toast = useToast();
 
 const { data: roles } = await useFetch("/api/roles");
 
-console.log(roles);
-
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isSubmitting.value = true;
 
@@ -100,7 +98,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 <template>
   <NuxtLayout name="admin-authenticated">
     <slot name="header">
-      <EditTitleAction title="Users" to="/users" />
+      <EditTitleAction title="Usuário" to="/usuarios" />
     </slot>
 
     <FormContainer class="px-0">

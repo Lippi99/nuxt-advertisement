@@ -97,18 +97,6 @@ const value = ref(authStore.user?.organization);
             Monitores
           </NuxtLink>
         </li>
-        <li>
-          <NuxtLink
-            :class="[
-              'w-full h-full inline-block pl-7 py-3.5 text-neutral-400',
-              { 'text-primary-400': includesPrefix('propagandas') },
-            ]"
-            class="w-full h-full inline-block pl-7 py-3.5 text-neutral-400"
-            to="/propagandas"
-          >
-            Propagandas
-          </NuxtLink>
-        </li>
 
         <li>
           <NuxtLink
@@ -120,6 +108,18 @@ const value = ref(authStore.user?.organization);
             to="/playlists"
           >
             Playlists
+          </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink
+            :class="[
+              'w-full h-full inline-block pl-7 py-3.5 text-neutral-400',
+              { 'text-primary-400': includesPrefix('propagandas') },
+            ]"
+            class="w-full h-full inline-block pl-7 py-3.5 text-neutral-400"
+            to="/propagandas"
+          >
+            Propagandas
           </NuxtLink>
         </li>
       </ul>

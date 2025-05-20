@@ -1,9 +1,7 @@
-// server/api/auth/me.get.ts
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { requireRole } from "~/server/services/auth-service";
 import { User } from "~/server/models/user";
 import { pool } from "~/server/services/db";
-import dayjs from "dayjs";
 
 interface AuthTokenPayload extends JwtPayload {
   userId: number;
@@ -21,13 +19,16 @@ export default defineEventHandler(async (event) => {
 
   const decoded = jwt.verify(token, config.jwtSecret) as AuthTokenPayload;
 
+  // Buscar usuário e role
   const result = await pool.query(
     `
-      SELECT u.id, u.email, u.name, u.last_name, u.organization_id, u.subscription_current_period_end, u.birth, u.is_subscribed, r.name AS role
-      FROM "user" u
-      JOIN "role" r ON u.role_id = r.id
-      WHERE u.id = $1
-      `,
+    SELECT 
+      u.id, u.email, u.name, u.last_name, u.organization_id, u.birth,
+      r.name AS role
+    FROM "user" u
+    JOIN "role" r ON u.role_id = r.id
+    WHERE u.id = $1
+    `,
     [decoded.userId]
   );
 
@@ -37,13 +38,21 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: "User not found" });
   }
 
-  const isSubscriptionEnded = dayjs().isBefore(
-    user.subscription_current_period_end
-  );
+  // Verifica status da assinatura da organização
+  let isSubscribed = false;
 
-  const organization = user.organization_id;
+  if (user.organization_id) {
+    const orgResult = await pool.query(
+      `
+      SELECT subscription_status 
+      FROM "organization" 
+      WHERE id = $1
+      `,
+      [user.organization_id]
+    );
 
-  console.log(user);
+    isSubscribed = orgResult.rows[0]?.subscription_status === "active";
+  }
 
   return {
     user: {
@@ -52,9 +61,10 @@ export default defineEventHandler(async (event) => {
       name: user.name,
       lastName: user.last_name,
       role: user.role,
-      isSubscribed: isSubscriptionEnded,
       birth: user.birth,
-      organization,
+      organization: user.organization_id,
+      isSubscribed,
+      hasOrganization: !!user.organization_id,
     } as User,
   };
 });
