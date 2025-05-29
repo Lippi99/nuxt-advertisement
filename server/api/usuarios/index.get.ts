@@ -14,10 +14,10 @@ export default defineEventHandler(async (event) => {
     `
     SELECT id, email, name, last_name, created_at, updated_at
     FROM "user"
-    WHERE id <> $1
+    WHERE id <> $1 AND organization_id = $2
     ORDER BY id ASC
     `,
-    [user.id]
+    [user.id, user.organization_id]
   );
 
   return { usuarios: result.rows };

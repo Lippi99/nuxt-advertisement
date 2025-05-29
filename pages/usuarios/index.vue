@@ -35,7 +35,7 @@ const columns: TableColumn<User>[] = [
     header: "Nome",
   },
   {
-    accessorKey: "lastName",
+    accessorKey: "last_name",
     header: "Sobrenome",
   },
 
@@ -44,7 +44,7 @@ const columns: TableColumn<User>[] = [
     header: "E-mail",
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "created_at",
     header: "Criado em",
     cell: (value) =>
       `${dayjs(value.renderValue() as string).format("DD/MM/YYYY")}`,

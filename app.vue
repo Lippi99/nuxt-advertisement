@@ -32,10 +32,7 @@ const showSubscriptionModal = computed<boolean>(
       </template>
 
       <template #body>
-        <p>
-          Parabéns por ter criado sua conta. Agora, você precisa ativar sua
-          assinatura para poder utilizá-lo.
-        </p>
+        <p>Você precisa ativar sua assinatura para poder utilizá-lo.</p>
       </template>
 
       <template #footer>

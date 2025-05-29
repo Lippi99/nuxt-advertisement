@@ -1,20 +1,23 @@
 <script lang="ts" setup>
 import type { TabsItem } from "@nuxt/ui";
 
-useHead({
-  title: "Login screen",
+useSeoMeta({
+  title: "Tela de login",
+  ogTitle: "Tela de login",
 });
 
 definePageMeta({
   middleware: ["guest"],
 });
 
+const route = useRoute();
+
 const tabs: TabsItem[] = [
   { label: "Admin", slot: "admin" },
   { label: "Monitor", slot: "monitor" },
 ];
 
-const isRegister = ref(false);
+const isRegister = ref(route.query.register === "true");
 </script>
 
 <template>
@@ -23,7 +26,7 @@ const isRegister = ref(false);
   >
     <UTabs :items="tabs" class="w-full max-w-md">
       <template #admin>
-        <h1 class="text-4xl mb-6 mt-5">Welcome to login page!</h1>
+        <h1 class="text-4xl mb-6 mt-5">Bem vindo a tela de login</h1>
         <template v-if="isRegister">
           <RegisterUser @back-to-login="isRegister = false" />
         </template>
@@ -31,7 +34,7 @@ const isRegister = ref(false);
       </template>
 
       <template #monitor>
-        <h1 class="text-4xl mb-6 mt-5">Welcome to monitor login page!</h1>
+        <h1 class="text-4xl mb-6 mt-5">Bem vindo a tela de login do monitor</h1>
 
         <LoginMonitor />
       </template>

@@ -18,8 +18,6 @@ const handleLogout = async () => {
 };
 
 const welcomeUser = computed(() => `Bem vindo(a), ${authStore.user?.name}`);
-
-const value = ref(authStore.user?.organization);
 </script>
 
 <template>

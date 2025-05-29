@@ -6,6 +6,11 @@ definePageMeta({
   layout: false,
 });
 
+useSeoMeta({
+  title: "Cadastre uma organização",
+  ogTitle: "Cadastre uma organização",
+});
+
 const schema = z.object({
   organization: z
     .string({ message: "Nome da organização é obrigatório!" })

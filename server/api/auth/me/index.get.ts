@@ -51,7 +51,11 @@ export default defineEventHandler(async (event) => {
       [user.organization_id]
     );
 
-    isSubscribed = orgResult.rows[0]?.subscription_status === "active";
+    isSubscribed =
+      orgResult.rows[0]?.subscription_status === "active" ||
+      orgResult.rows[0]?.subscription_status === "canceled";
+
+    console.log(user.organization_id);
   }
 
   return {

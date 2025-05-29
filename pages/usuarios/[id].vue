@@ -1,11 +1,8 @@
-<script></script>
-
-<template></template>
-
-<!-- <script lang="ts" setup>
+<script lang="ts" setup>
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import dayjs from "dayjs";
+import type { User } from "~/types/user";
 
 useHead({
   title: "Editar usuário",
@@ -56,11 +53,11 @@ type Schema = z.infer<typeof schema>;
 
 const id = route.params.id;
 
-const { data: user } = await useFetch(`/api/usuarios/${id}`);
+const { data: user } = await useFetch<{ user: User }>(`/api/usuarios/${id}`);
 
 const state = reactive<Partial<Schema>>({
   name: user.value?.user.name || undefined,
-  lastName: user.value?.user.lastName || undefined,
+  lastName: user.value?.user.last_name || undefined,
   email: user.value?.user.email || undefined,
   password: undefined,
   passwordRepeat: undefined,
@@ -68,7 +65,7 @@ const state = reactive<Partial<Schema>>({
     ? dayjs(user.value.user.birth).add(1, "day").format("YYYY-MM-DD")
     : undefined,
 
-  roleId: user.value?.user.roleId || undefined,
+  roleId: user.value?.user.role_id || undefined,
 });
 
 const isSubmitting = ref(false);
@@ -148,7 +145,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UFormField>
         <div class="flex items-center gap-3.5 mt-4">
           <div class="flex-1">
-            <UFormField label="Senha" name="password" required>
+            <UFormField label="Senha" name="password">
               <UInput
                 size="lg"
                 class="w-full mt-2"
@@ -158,7 +155,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             </UFormField>
           </div>
           <div class="flex-1">
-            <UFormField label="Repetir senha" name="passwordRepeat" required>
+            <UFormField label="Repetir senha" name="passwordRepeat">
               <UInput
                 size="lg"
                 class="w-full mt-2"
@@ -194,10 +191,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             :loading="isSubmitting"
             class="cursor-pointer py-2.5 mt-8 max-w-xs w-full flex items-center justify-center"
             type="submit"
-            >Cadastrar</UButton
+            >Atualizar</UButton
           >
         </div>
       </UForm>
     </FormContainer>
   </NuxtLayout>
-</template> -->
+</template>

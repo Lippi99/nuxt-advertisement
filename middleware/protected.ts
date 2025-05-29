@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo("/login");
   }
 
-  console.log(authStore.user);
+
 
   if (!authStore.user.organization) {
     return navigateTo("/criar-organizacao");

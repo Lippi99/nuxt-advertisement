@@ -15,10 +15,9 @@ export default defineNuxtConfig({
     "nuxt-qrcode",
     "@vite-pwa/nuxt",
     "@unlok-co/nuxt-stripe",
+    "@nuxt/fonts",
   ],
-  // ui: {
-  //   fonts: false,
-  // },
+
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
     awsAccessKey: "",
@@ -76,6 +75,21 @@ export default defineNuxtConfig({
     },
   },
 
+  fonts: {
+    defaults: {
+      weights: [400],
+      styles: ["normal", "italic"],
+      subsets: [
+        "cyrillic-ext",
+        "cyrillic",
+        "greek-ext",
+        "greek",
+        "vietnamese",
+        "latin-ext",
+        "latin",
+      ],
+    },
+  },
   stripe: {
     client: {
       key: process.env.STRIPE_CLIENT_KEY,

@@ -31,34 +31,44 @@ const toast = useToast();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   isSubmitting.value = true;
 
-  try {
-    await $fetch("/api/auth/signup", {
-      method: "POST",
-      body: {
-        ...event.data,
-      },
-    });
+  const { error } = await useFetch("/api/auth/signup", {
+    method: "POST",
+    body: {
+      ...event.data,
+    },
+  });
+
+  if (!error.value) {
     toast.add({
       title: "Success",
       description: "Usuário criado com sucesso",
       color: "success",
     });
-
     state.value.name = undefined;
     state.value.lastName = undefined;
     state.value.email = undefined;
     state.value.birth = undefined;
     state.value.password = undefined;
     state.value.passwordRepeat = undefined;
-  } catch {
+  }
+
+  if (error.value?.statusCode === 400) {
     toast.add({
       title: "Erro",
-      description: "Houve um erro na criação do usuário",
+      description: "E-mail já cadastrado",
       color: "error",
     });
-  } finally {
-    isSubmitting.value = false;
   }
+
+  if (error.value?.statusCode === 500) {
+    toast.add({
+      title: "Erro",
+      description: "Houve um erro ao cadastrar o usuário",
+      color: "error",
+    });
+  }
+
+  isSubmitting.value = false;
 }
 </script>
 
@@ -70,24 +80,29 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     @submit="onSubmit"
   >
     <div class="flex items-center gap-3.5">
-      <UFormField class="mb-4" required label="Name" name="name">
+      <UFormField class="mb-4" required label="Nome" name="name">
         <UInput size="lg" class="w-full" v-model="state.name" />
       </UFormField>
 
-      <UFormField class="mb-4" required label="Last name" name="lastName">
+      <UFormField class="mb-4" required label="Sobrenome" name="lastName">
         <UInput size="lg" class="w-full" v-model="state.lastName" />
       </UFormField>
     </div>
 
-    <UFormField class="mb-4" required label="Email" name="email">
+    <UFormField class="mb-4" required label="E-mail" name="email">
       <UInput size="lg" class="w-full" v-model="state.email" />
     </UFormField>
 
-    <UFormField class="mb-4" required label="Birth" name="birth">
+    <UFormField
+      class="mb-4"
+      required
+      label="Data de Nascimento (mês / dia / ano)"
+      name="birth"
+    >
       <UInput type="date" size="lg" class="w-full" v-model="state.birth" />
     </UFormField>
 
-    <UFormField class="mb-4" required label="Password" name="password">
+    <UFormField class="mb-4" required label="Senha" name="password">
       <UInput
         size="lg"
         class="w-full"
@@ -99,7 +114,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     <UFormField
       required
       class="mb-4"
-      label="Password Repeat"
+      label="Repetir senha"
       name="passwordRepeat"
     >
       <UInput
@@ -117,12 +132,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         class="cursor-pointer flex items-center justify-center max-w-52 w-full"
         type="submit"
       >
-        Submit
+        Cadastrar
       </UButton>
     </div>
 
     <div class="text-center mt-3.5">
-      <span>OR</span>
+      <span>OU</span>
     </div>
 
     <div class="flex items-center justify-center mt-3.5">
@@ -133,7 +148,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         class="cursor-pointer flex items-center justify-center max-w-52 w-full"
         type="button"
       >
-        Back to login
+        Voltar para o login
       </UButton>
     </div>
   </UForm>

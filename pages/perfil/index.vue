@@ -120,8 +120,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UFormField>
 
         <div
-          v-if="user?.isSubscribed"
-          class="flex items-center justify-start mt-8"
+          v-if="user?.isSubscribed && user?.role === 'admin'"
+          class="flex items-center justify-between mt-8"
         >
           <UButton
             class="cursor-pointer"

@@ -34,7 +34,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
       toast.add({
         title: "Success",
-        description: "The form has been submitted.",
+        description: "Usuário autenticado com sucesso",
         color: "success",
       });
     } else {
@@ -44,7 +44,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     console.log(error);
 
     const errorMessage =
-      error?.response?._data?.message || "There was an error when logging in";
+      error?.response?._data?.message || "Houve um erro ao logar";
 
     toast.add({
       title: "Error",
@@ -64,11 +64,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     class="max-w-xl w-full border border-green-300 p-8 rounded-lg"
     @submit="onSubmit"
   >
-    <UFormField label="Email" name="email">
+    <UFormField label="E-mail" name="email">
       <UInput size="lg" class="w-full" v-model="state.email" />
     </UFormField>
 
-    <UFormField class="mt-6" label="Password" name="password">
+    <UFormField class="mt-6" label="Senha" name="password">
       <UInput
         size="lg"
         class="w-full"
@@ -77,10 +77,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       />
     </UFormField>
 
-    <NuxtLink class="inline-block mt-4" to="/forgot-password"
-      >Forgot your password?</NuxtLink
-    >
-
     <div class="flex items-center justify-center mt-8">
       <UButton
         :loading="isSubmitting"
@@ -88,11 +84,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         class="cursor-pointer flex items-center justify-center max-w-52 w-full"
         type="submit"
       >
-        Submit
+        Entrar
       </UButton>
     </div>
     <div class="text-center mt-3.5">
-      <span>OR</span>
+      <span>OU</span>
     </div>
 
     <div class="flex items-center justify-center mt-3.5">
@@ -103,7 +99,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         class="cursor-pointer flex items-center justify-center max-w-52 w-full"
         type="button"
       >
-        Register
+        Cadastrar-se
       </UButton>
     </div>
   </UForm>

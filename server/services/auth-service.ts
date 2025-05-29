@@ -64,7 +64,11 @@ export async function activeSubscription(event: H3Event) {
 
   const organization = orgResult.rows[0];
 
-  if (!organization || organization.subscription_status !== "active") {
+  const subscriptionActive = dayjs().isAfter(
+    organization.subscription_current_period_end
+  );
+
+  if (subscriptionActive) {
     throw createError({
       statusCode: 403,
       message: "Você precisa estar com uma assinatura ativa",
