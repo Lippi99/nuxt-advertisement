@@ -1,6 +1,15 @@
 <script setup lang="ts">
 useHead({
-  title: "Index screen",
+  htmlAttrs: {
+    lang: "pt",
+  },
+  link: [
+    {
+      rel: "icon",
+      type: "image/png",
+      href: "/icons/logo.png",
+    },
+  ],
 });
 
 const auth = useAuthStore();

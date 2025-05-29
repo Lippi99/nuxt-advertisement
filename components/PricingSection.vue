@@ -5,7 +5,7 @@ const frequency = ref("monthly");
 
 const frequencies = [
   { label: "Mensal", id: "monthly" },
-  { label: "Anual", id: "annually" },
+  // { label: "Anual", id: "annually" },
 ];
 
 const tiers = [

@@ -6,13 +6,11 @@
       >
         <div class="flex flex-col items-center lg:items-start">
           <img
-            class="h-9"
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-            alt="Ad Spotter"
+            class="w-34 object-contain overflow-hidden"
+            alt="Logo do site"
+            src="/icons/logo.png"
           />
-          <p
-            class="mt-4 max-w-sm text-center lg:text-start text-sm text-gray-400"
-          >
+          <p class="max-w-sm text-center lg:text-start text-sm text-gray-400">
             Tornando a divulgação mais simples, eficiente e acessível para
             pequenos e médios negócios.
           </p>

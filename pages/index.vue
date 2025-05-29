@@ -11,6 +11,13 @@ useSeoMeta({
   ogDescription:
     "Acompanhe, edite e gerencie as propagandas dos seus estabelecimentos de forma fácil e rápida com aAd Spotter.",
   ogType: "website",
+  ogImage: "/icons/logo.png",
+  ogLocale: "pt-br",
+  twitterTitle: "Gerencie Suas Propagandas |Ad Spotter",
+  twitterDescription:
+    "Acompanhe, edite e gerencie as propagandas dos seus estabelecimentos de forma fácil e rápida com aAd Spotter.",
+  twitterImage: "/icons/logo.png",
+  twitterCard: "summary",
   ogUrl: useRequestURL().origin,
 });
 
