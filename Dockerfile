@@ -12,4 +12,6 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD DATABASE_URL=$DATABASE_URL npm run migrate up && npm run start
+CMD ["npm", "run", "start"]
+
+# CMD DATABASE_URL=$DATABASE_URL npm run migrate up && npm run start
