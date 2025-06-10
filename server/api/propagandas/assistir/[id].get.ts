@@ -10,8 +10,7 @@ export default defineEventHandler(async (event) => {
       m.name AS monitor_name,
       p.id AS playlist_id,
       p.name AS playlist_name,
-      a.id AS advertisement_id,
-      a.name AS advertisement_name
+      a.id AS advertisement_id
     FROM unpaired_monitor um
     JOIN monitor m ON um.monitor_id = m.id
     JOIN playlist p ON m.playlist_id = p.id
