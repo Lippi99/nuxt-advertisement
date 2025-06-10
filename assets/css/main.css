@@ -1,12 +1,8 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-:root {
-  --ui-bg: var(--ui-color-neutral-950);
-  --ui-text: var(--color-white);
-}
-
 .dark {
+  --ui-text: var(--color-white);
   --ui-bg: var(--ui-color-neutral-950);
 }
 

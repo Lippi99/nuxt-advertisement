@@ -27,6 +27,7 @@ export default defineNuxtConfig({
   ],
 
   css: ["~/assets/css/main.css"],
+
   runtimeConfig: {
     dbHost: (process.env.DB_HOST as string) || "",
     dbPort: (process.env.DB_PORT as string) || "",
