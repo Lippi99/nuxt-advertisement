@@ -26,6 +26,11 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
   ],
 
+  colorMode: {
+    preference: "dark",
+    fallback: "dark",
+  },
+
   css: ["~/assets/css/main.css"],
 
   runtimeConfig: {
