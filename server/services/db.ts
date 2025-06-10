@@ -1,10 +1,12 @@
 // server/utils/db.ts
 import { Pool } from "pg";
 
+const config = useRuntimeConfig();
+
 export const pool = new Pool({
-  host: process.env.DB_HOST as string,
-  port: +(process.env.DB_PORT as string),
-  user: process.env.DB_USER as string,
-  password: process.env.DB_PASSWORD as string,
-  database: process.env.DB_NAME as string,
+  host: config.dbHost,
+  port: Number(config.dbPort),
+  user: config.dbUser,
+  password: config.dbPassword,
+  database: config.dbName,
 });

@@ -28,6 +28,12 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
+    dbHost: (process.env.DB_HOST as string) || "",
+    dbPort: (process.env.DB_PORT as string) || "",
+    dbUser: (process.env.DB_USER as string) || "",
+    dbPassword: (process.env.DB_PASSWORD as string) || "",
+    dbName: (process.env.DB_NAME as string) || "",
+
     awsAccessKey: "",
     awsSecretKey: "",
     awsBucketName: "",
