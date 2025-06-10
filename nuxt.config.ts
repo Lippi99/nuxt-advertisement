@@ -34,15 +34,16 @@ export default defineNuxtConfig({
     dbPassword: (process.env.DB_PASSWORD as string) || "",
     dbName: (process.env.DB_NAME as string) || "",
 
-    awsAccessKey: "",
-    awsSecretKey: "",
-    awsBucketName: "",
-    awsRegion: "",
-    jwtSecret: "",
-    stripeSecretKey: "",
-    stripeProductBasic: "",
-    stripeProductPremium: "",
-    stripeWebhookSecretKey: "",
+    awsAccessKey: process.env.AWS_ACCESS_KEY || "",
+    awsSecretKey: process.env.AWS_SECRET_KEY || "",
+    awsBucketName: process.env.AWS_BUCKET_NAME || "",
+    awsRegion: process.env.AWS_REGION || "",
+
+    jwtSecret: process.env.JWT_SECRET || "",
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
+    stripeProductBasic: process.env.STRIPE_PRODUCT_BASIC || "",
+    stripeProductPremium: process.env.STRIPE_PRODUCT_PREMIUM || "",
+    stripeWebhookSecretKey: process.env.STRIPE_WEBHOOK_SECRET_KEY || "",
   },
 
   pwa: {
